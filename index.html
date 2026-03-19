@@ -3,983 +3,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orçamento de Soroterapia — Clínica Palmiros / Bella Derm</title>
+<title>Orçamento Soroterapia — Palmiros / Bella Derm</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-  
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #f0f2f5;
-    color: #1a1a2e;
-    min-height: 100vh;
-  }
-
-  .header {
-    background: linear-gradient(135deg, #1a365d 0%, #2d5aa0 100%);
-    color: white;
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
-
-  .header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-
-  .header .subtitle {
-    font-size: 12px;
-    opacity: 0.8;
-    margin-top: 2px;
-  }
-
-  .header .logo-area {
-    text-align: right;
-    font-size: 11px;
-    opacity: 0.7;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 20px;
-  }
-
-  @media (max-width: 900px) {
-    .container { grid-template-columns: 1fr; }
-  }
-
-  .panel {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #e8eaed;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .panel-header h2 {
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .panel-header .badge {
-    background: #e8f0fe;
-    color: #1a73e8;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
-  }
-
-  /* Patient info */
-  .patient-bar {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    padding: 16px 20px;
-    margin-bottom: 0;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    align-items: end;
-    grid-column: 1 / -1;
-  }
-
-  .field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 180px;
-  }
-
-  .field-group label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #5f6368;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .field-group input, .field-group select {
-    border: 1.5px solid #dadce0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    transition: border-color 0.2s;
-  }
-
-  .field-group input:focus, .field-group select:focus {
-    outline: none;
-    border-color: #1a73e8;
-    box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
-  }
-
-  /* Search */
-  .search-area {
-    padding: 12px 16px;
-    border-bottom: 1px solid #e8eaed;
-    display: flex;
-    gap: 8px;
-  }
-
-  .search-area input {
-    flex: 1;
-    border: 1.5px solid #dadce0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .search-area input:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-
-  .search-area select {
-    border: 1.5px solid #dadce0;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-family: 'Inter', sans-serif;
-    background: white;
-    min-width: 130px;
-  }
-
-  /* Catalog list */
-  .catalog-list {
-    max-height: 520px;
-    overflow-y: auto;
-    padding: 4px 0;
-  }
-
-  .catalog-item {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    padding: 10px 16px;
-    gap: 12px;
-    border-bottom: 1px solid #f1f3f4;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .catalog-item:hover { background: #f8f9ff; }
-
-  .catalog-item .item-name {
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.3;
-  }
-
-  .catalog-item .item-detail {
-    font-size: 11px;
-    color: #80868b;
-    margin-top: 1px;
-  }
-
-  .catalog-item .item-price {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1a73e8;
-    white-space: nowrap;
-  }
-
-  .catalog-item .item-unit {
-    font-size: 10px;
-    color: #80868b;
-  }
-
-  .add-btn {
-    background: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s;
-    flex-shrink: 0;
-  }
-
-  .add-btn:hover { background: #1557b0; }
-
-  /* Cart / Budget */
-  .cart-panel { position: sticky; top: 20px; }
-
-  .cart-list {
-    padding: 8px 0;
-    max-height: 340px;
-    overflow-y: auto;
-  }
-
-  .cart-item {
-    display: grid;
-    grid-template-columns: 1fr auto auto auto;
-    align-items: center;
-    padding: 8px 16px;
-    gap: 8px;
-    border-bottom: 1px solid #f1f3f4;
-    font-size: 12px;
-  }
-
-  .cart-item .ci-name {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 1.3;
-  }
-
-  .cart-item .ci-price {
-    font-weight: 600;
-    color: #1a73e8;
-    white-space: nowrap;
-    font-size: 12px;
-  }
-
-  .qty-control {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: #f1f3f4;
-    border-radius: 6px;
-    padding: 2px;
-  }
-
-  .qty-btn {
-    width: 24px;
-    height: 24px;
-    border: none;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #5f6368;
-    font-weight: 600;
-  }
-
-  .qty-btn:hover { background: #e8eaed; }
-
-  .qty-val {
-    width: 24px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 13px;
-  }
-
-  .remove-btn {
-    background: none;
-    border: none;
-    color: #d93025;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 2px 4px;
-    border-radius: 4px;
-  }
-
-  .remove-btn:hover { background: #fce8e6; }
-
-  .cart-empty {
-    padding: 40px 20px;
-    text-align: center;
-    color: #80868b;
-    font-size: 13px;
-  }
-
-  .cart-empty .icon { font-size: 32px; margin-bottom: 8px; }
-
-  /* Totals */
-  .totals {
-    padding: 16px 20px;
-    border-top: 2px solid #e8eaed;
-    background: #fafbfc;
-  }
-
-  .total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    font-size: 13px;
-  }
-
-  .total-row.main {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a365d;
-    padding-top: 8px;
-    border-top: 1px solid #dadce0;
-    margin-top: 4px;
-  }
-
-  .total-row .label { color: #5f6368; }
-  .total-row.main .label { color: #1a365d; }
-
-  .markup-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 0;
-    border-bottom: 1px solid #e8eaed;
-    margin-bottom: 4px;
-  }
-
-  .markup-row label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #5f6368;
-  }
-
-  .markup-row input {
-    width: 70px;
-    border: 1.5px solid #dadce0;
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 13px;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .markup-row input:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-
-  /* Action buttons */
-  .actions {
-    padding: 12px 20px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-primary {
-    flex: 1;
-    background: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .btn-primary:hover { background: #1557b0; }
-
-  .btn-secondary {
-    background: white;
-    color: #5f6368;
-    border: 1.5px solid #dadce0;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-  }
-
-  .btn-secondary:hover { background: #f8f9fa; }
-
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 0;
-    padding: 0 16px;
-    border-bottom: 1px solid #e8eaed;
-  }
-
-  .tab {
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #5f6368;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-  }
-
-  .tab:hover { color: #1a73e8; }
-  .tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
-
-  /* Protocol quick-add */
-  .proto-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    border-bottom: 1px solid #f1f3f4;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .proto-item:hover { background: #f8f9ff; }
-
-  .proto-info { flex: 1; }
-  .proto-name { font-size: 13px; font-weight: 500; }
-  .proto-desc { font-size: 11px; color: #80868b; margin-top: 1px; }
-  .proto-price { font-size: 14px; font-weight: 600; color: #1a73e8; margin-left: 12px; }
-
-  /* Print */
-  .print-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .print-overlay.show { display: flex; }
-
-  .print-content {
-    background: white;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 12px;
-    padding: 32px;
-  }
-
-  .print-content h3 {
-    font-size: 18px;
-    margin-bottom: 4px;
-  }
-
-  .print-content .clinic-name {
-    font-size: 12px;
-    color: #5f6368;
-    margin-bottom: 16px;
-  }
-
-  .print-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-    font-size: 12px;
-  }
-
-  .print-content th {
-    text-align: left;
-    padding: 8px;
-    background: #f1f3f4;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .print-content td {
-    padding: 8px;
-    border-bottom: 1px solid #f1f3f4;
-  }
-
-  .print-content .total-line {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 14px;
-  }
-
-  .print-content .total-line.grand {
-    font-size: 18px;
-    font-weight: 700;
-    border-top: 2px solid #1a365d;
-    margin-top: 8px;
-    padding-top: 12px;
-    color: #1a365d;
-  }
-
-  .print-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 20px;
-  }
-
-  @media print {
-    body * { visibility: hidden; }
-    .print-content, .print-content * { visibility: visible; }
-    .print-content { position: absolute; top: 0; left: 0; width: 100%; }
-    .print-actions { display: none; }
-    .print-overlay { display: flex !important; background: white; }
-  }
-
-  /* Category colors */
-  .cat-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-    flex-shrink: 0;
-  }
-
-  .cat-orto { background: #1a73e8; }
-  .cat-vita { background: #0d904f; }
-  .cat-anest { background: #e8710a; }
-  .cat-fator { background: #9334e6; }
-  .cat-proto { background: #d93025; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a365d,#2d5aa0);color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header h1{font-size:20px;font-weight:700}.header .sub{font-size:12px;opacity:.8;margin-top:2px}.header .logo{text-align:right;font-size:11px;opacity:.7}
+.container{max-width:1200px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 380px;gap:20px}
+@media(max-width:900px){.container{grid-template-columns:1fr}}
+.panel{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden}
+.ph{padding:16px 20px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;gap:10px}
+.ph h2{font-size:15px;font-weight:600}.badge{background:#e8f0fe;color:#1a73e8;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+.pbar{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px 20px;display:flex;gap:16px;flex-wrap:wrap;align-items:end;grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px}
+.fg label{font-size:11px;font-weight:600;color:#5f6368;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select{border:1.5px solid #dadce0;border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit}
+.fg input:focus,.fg select:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.1)}
+.stabs{display:flex;padding:0 16px;border-bottom:2px solid #e8eaed;background:#fafbfc}
+.stab{padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:#5f6368}
+.stab:hover{color:#1a73e8}
+.stab.ap{color:#2d5aa0;border-bottom-color:#2d5aa0;background:#e8f0fe}
+.stab.af{color:#c0392b;border-bottom-color:#c0392b;background:#fce8e6}
+.tabs{display:flex;padding:0 16px;border-bottom:1px solid #e8eaed;overflow-x:auto}
+.tab{padding:10px 14px;font-size:11px;font-weight:500;color:#5f6368;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:#1a73e8}.tab.active{color:#1a73e8;border-bottom-color:#1a73e8}
+.sa{padding:12px 16px;border-bottom:1px solid #e8eaed}
+.sa input{width:100%;border:1.5px solid #dadce0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit}
+.sa input:focus{outline:none;border-color:#1a73e8}
+.cl{max-height:460px;overflow-y:auto;padding:4px 0}
+.ci{display:grid;grid-template-columns:1fr auto auto;align-items:center;padding:10px 16px;gap:12px;border-bottom:1px solid #f1f3f4;cursor:pointer;transition:background .15s}
+.ci:hover{background:#f8f9ff}
+.ci .n{font-size:13px;font-weight:500;line-height:1.3}.ci .d{font-size:11px;color:#80868b;margin-top:1px}
+.ci .p{font-size:13px;font-weight:600;color:#1a73e8;white-space:nowrap}.ci .u{font-size:10px;color:#80868b}
+.ab{background:#1a73e8;color:#fff;border:none;border-radius:6px;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ab:hover{background:#1557b0}.ab.fm{background:#c0392b}.ab.fm:hover{background:#a93226}
+.cp{position:sticky;top:20px}
+.clist{padding:8px 0;max-height:320px;overflow-y:auto}
+.citem{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;padding:8px 16px;gap:8px;border-bottom:1px solid #f1f3f4;font-size:12px}
+.citem .cn{font-weight:500;font-size:12px;line-height:1.3}.citem .cp2{font-weight:600;color:#1a73e8;white-space:nowrap;font-size:12px}
+.sp{font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:4px}
+.sp.phd{background:#e8f0fe;color:#2d5aa0}.sp.fm{background:#fce8e6;color:#c0392b}
+.qc{display:flex;align-items:center;gap:4px;background:#f1f3f4;border-radius:6px;padding:2px}
+.qb{width:24px;height:24px;border:none;background:#fff;border-radius:4px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:#5f6368;font-weight:600}
+.qb:hover{background:#e8eaed}.qv{width:24px;text-align:center;font-weight:600;font-size:13px}
+.rb{background:none;border:none;color:#d93025;cursor:pointer;font-size:16px;padding:2px 4px;border-radius:4px}.rb:hover{background:#fce8e6}
+.ce{padding:40px 20px;text-align:center;color:#80868b;font-size:13px}.ce .ic{font-size:32px;margin-bottom:8px}
+.tots{padding:16px 20px;border-top:2px solid #e8eaed;background:#fafbfc}
+.tr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
+.tr.m{font-size:18px;font-weight:700;color:#1a365d;padding-top:8px;border-top:1px solid #dadce0;margin-top:4px}
+.tr .l{color:#5f6368}.tr.m .l{color:#1a365d}
+.mr{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #e8eaed;margin-bottom:4px}
+.mr label{font-size:12px;font-weight:500;color:#5f6368}
+.mr input{width:70px;border:1.5px solid #dadce0;border-radius:6px;padding:4px 8px;font-size:13px;text-align:center;font-family:inherit}
+.mr input:focus{outline:none;border-color:#1a73e8}
+.acts{padding:12px 20px;display:flex;gap:8px}
+.bp{flex:1;background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}.bp:hover{background:#1557b0}
+.bs{background:#fff;color:#5f6368;border:1.5px solid #dadce0;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer}.bs:hover{background:#f8f9fa}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.do{background:#1a73e8}.dv{background:#0d904f}.da{background:#e8710a}.dp{background:#d93025}.df{background:#c0392b}
+.po{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center}
+.po.show{display:flex}
+.pc{background:#fff;width:90%;max-width:600px;max-height:90vh;overflow-y:auto;border-radius:12px;padding:32px}
+.pc h3{font-size:18px;margin-bottom:4px}.pc .cn2{font-size:12px;color:#5f6368;margin-bottom:16px}
+.pc table{width:100%;border-collapse:collapse;margin:16px 0;font-size:12px}
+.pc th{text-align:left;padding:8px;background:#f1f3f4;font-weight:600;font-size:11px;text-transform:uppercase}
+.pc td{padding:8px;border-bottom:1px solid #f1f3f4}
+.tl{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
+.tl.g{font-size:18px;font-weight:700;border-top:2px solid #1a365d;margin-top:8px;padding-top:12px;color:#1a365d}
+.pa{display:flex;gap:8px;margin-top:20px}
+@media print{body *{visibility:hidden}.pc,.pc *{visibility:visible}.pc{position:absolute;top:0;left:0;width:100%}.pa{display:none}.po{display:flex!important;background:#fff}}
 </style>
 </head>
 <body>
-
-<div class="header">
-  <div>
-    <h1>Orçamento de Soroterapia</h1>
-    <div class="subtitle">PHD do Brasil — Tabela Fev/2026</div>
-  </div>
-  <div class="logo-area">
-    Clínica Palmiros<br>Bella Derm
-  </div>
-</div>
-
+<div class="header"><div><h1>Orçamento de Soroterapia</h1><div class="sub">PHD do Brasil + Formédica</div></div><div class="logo">Clínica Palmiros<br>Bella Derm</div></div>
 <div class="container">
-  
-  <!-- Patient Info -->
-  <div class="patient-bar">
-    <div class="field-group">
-      <label>Paciente</label>
-      <input type="text" id="patientName" placeholder="Nome do paciente">
-    </div>
-    <div class="field-group" style="max-width:160px;">
-      <label>Data</label>
-      <input type="date" id="budgetDate">
-    </div>
-    <div class="field-group" style="max-width:160px;">
-      <label>Clínica</label>
-      <select id="clinicSelect">
-        <option>Clínica Palmiros</option>
-        <option>Bella Derm</option>
-      </select>
-    </div>
-    <div class="field-group" style="max-width:180px;">
-      <label>Via do Soro</label>
-      <select id="viaSelect">
-        <option>EV (Endovenoso)</option>
-        <option>IM (Intramuscular)</option>
-        <option>SC (Subcutâneo)</option>
-        <option>ID (Intradérmico)</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Catalog Panel -->
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Catálogo PHD do Brasil</h2>
-      <span class="badge" id="itemCount">0 itens</span>
-    </div>
-    
-    <div class="tabs" id="tabsContainer">
-      <div class="tab active" data-tab="ativos">Ativos</div>
-      <div class="tab" data-tab="vitaminas">Vitaminas</div>
-      <div class="tab" data-tab="outros">Outros</div>
-      <div class="tab" data-tab="protocolos">Protocolos Prontos</div>
-    </div>
-
-    <div class="search-area">
-      <input type="text" id="searchInput" placeholder="Buscar ativo, código ou substância...">
-    </div>
-
-    <div class="catalog-list" id="catalogList"></div>
-  </div>
-
-  <!-- Cart Panel -->
-  <div class="panel cart-panel">
-    <div class="panel-header">
-      <h2>Composição do Soro</h2>
-      <span class="badge" id="cartCount">0 itens</span>
-    </div>
-
-    <div class="cart-list" id="cartList">
-      <div class="cart-empty">
-        <div class="icon">💉</div>
-        Selecione os ativos no catálogo<br>para compor o soro
-      </div>
-    </div>
-
-    <div class="totals">
-      <div class="markup-row">
-        <label>Margem sobre custo:</label>
-        <input type="number" id="markupInput" value="300" min="0" max="1000" step="10">
-        <label>%</label>
-      </div>
-      <div class="total-row">
-        <span class="label">Custo PHD (ativos)</span>
-        <span id="totalCost">R$ 0,00</span>
-      </div>
-      <div class="total-row">
-        <span class="label">Qtd. ampolas/frascos</span>
-        <span id="totalAmps">0</span>
-      </div>
-      <div class="total-row main">
-        <span class="label">Valor p/ Paciente</span>
-        <span id="totalPatient">R$ 0,00</span>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn-primary" onclick="showPrint()">Gerar Orçamento</button>
-      <button class="btn-secondary" onclick="clearCart()">Limpar</button>
-    </div>
-  </div>
+<div class="pbar">
+<div class="fg"><label>Paciente</label><input type="text" id="pN" placeholder="Nome do paciente"></div>
+<div class="fg" style="max-width:150px"><label>Data</label><input type="date" id="bD"></div>
+<div class="fg" style="max-width:150px"><label>Clínica</label><select id="cS"><option>Clínica Palmiros</option><option>Bella Derm</option></select></div>
+<div class="fg" style="max-width:170px"><label>Via</label><select id="vS"><option>EV (Endovenoso)</option><option>IM (Intramuscular)</option><option>SC (Subcutâneo)</option><option>ID (Intradérmico)</option></select></div>
 </div>
-
-<!-- Print overlay -->
-<div class="print-overlay" id="printOverlay" onclick="closePrint(event)">
-  <div class="print-content" id="printContent"></div>
+<div class="panel">
+<div class="ph"><h2>Catálogo</h2><span class="badge" id="iC">0</span></div>
+<div class="stabs"><div class="stab ap" data-s="phd" onclick="setSup('phd')">PHD do Brasil</div><div class="stab" data-s="fm" onclick="setSup('fm')">Formédica</div></div>
+<div class="tabs" id="tC"></div>
+<div class="sa"><input type="text" id="sI" placeholder="Buscar ativo, protocolo ou substância..."></div>
+<div class="cl" id="cL"></div>
 </div>
-
+<div class="panel cp">
+<div class="ph"><h2>Composição do Soro</h2><span class="badge" id="cC">0</span></div>
+<div class="clist" id="cLi"><div class="ce"><div class="ic">💉</div>Selecione os ativos para compor o soro</div></div>
+<div class="tots">
+<div class="mr"><label>Margem:</label><input type="number" id="mI" value="300" min="0" max="1000" step="10"><label>%</label></div>
+<div class="tr"><span class="l">Custo</span><span id="tCo">R$ 0,00</span></div>
+<div class="tr"><span class="l">Itens</span><span id="tA">0</span></div>
+<div class="tr m"><span class="l">Valor Paciente</span><span id="tP">R$ 0,00</span></div>
+</div>
+<div class="acts"><button class="bp" onclick="showPrint()">Gerar Orçamento</button><button class="bs" onclick="cart=[];rC()">Limpar</button></div>
+</div>
+</div>
+<div class="po" id="pO" onclick="cP(event)"><div class="pc" id="pCo"></div></div>
 <script>
-// ======= DATA =======
-const ATIVOS = [
-  {cod:501, name:'5-OH-Triptofano 10mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:42.50, perUnit:4.25},
-  {cod:598, name:'Acetil-L-Carnitina 600mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:92.95, perUnit:9.30},
-  {cod:502, name:'Ácido Alfa Lipóico 10mg/2ml', via:'EV/IM/ID', apres:'Cx 10 amp', price:46.70, perUnit:4.67},
-  {cod:503, name:'Ácido Alfa Lipóico 600mg/20ml', via:'EV/IM/ID', apres:'Cx 10 fr', price:309.50, perUnit:30.95},
-  {cod:599, name:'Ácido Fólico 10mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:51.45, perUnit:5.15},
-  {cod:640, name:'Citrulina 100mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:58.64, perUnit:5.86},
-  {cod:609, name:'Cloreto de Magnésio 400mg/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:44.62, perUnit:4.46},
-  {cod:523, name:'Coenzima Q10 100mg/1ml', via:'IM', apres:'Cx 10 amp', price:269.89, perUnit:26.99},
-  {cod:524, name:'Colágeno 10mg/ml - 2ml', via:'ID', apres:'Cx 10 amp', price:63.98, perUnit:6.40},
-  {cod:525, name:'Colina 200mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:42.20, perUnit:4.22},
-  {cod:527, name:'Crisina 100mcg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:114.66, perUnit:11.47},
-  {cod:531, name:'DMAE 140mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:112.87, perUnit:11.29},
-  {cod:532, name:'DMAE 60mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:78.20, perUnit:7.82},
-  {cod:533, name:'D-Pantenol (Vit B5) 50mg/ml - 2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:45.99, perUnit:4.60},
-  {cod:642, name:'D-Ribose 500mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:97.28, perUnit:9.73},
-  {cod:538, name:'GABA 25mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:83.47, perUnit:8.35},
-  {cod:539, name:'GAG (Glicosaminoglicano) 20mg/2ml', via:'EV/IM/ID', apres:'Cx 10 amp', price:99.96, perUnit:10.00},
-  {cod:643, name:'Glutationa 250mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:139.17, perUnit:13.92},
-  {cod:540, name:'HMB 50mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:79.98, perUnit:8.00},
-  {cod:541, name:'Inositol 200mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:61.20, perUnit:6.12},
-  {cod:542, name:'Inositol 200mg + Taurina 200mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:66.10, perUnit:6.61},
-  {cod:544, name:'L-Fenilalanina 50mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:42.98, perUnit:4.30},
-  {cod:545, name:'L-Arginina 1000mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:48.82, perUnit:4.88},
-  {cod:547, name:'L-Carnitina 600mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:81.50, perUnit:8.15},
-  {cod:614, name:'L-Glicina 100mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:44.62, perUnit:4.46},
-  {cod:615, name:'L-Glutamina 150mg/2ml', via:'EV/IM', apres:'Cx 10 amp', price:46.72, perUnit:4.67},
-  {cod:618, name:'L-Lisina 300mg/2ml', via:'EV/IM', apres:'Cx 10 amp', price:48.82, perUnit:4.88},
-  {cod:619, name:'L-Prolina 600mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:87.67, perUnit:8.77},
-  {cod:548, name:'L-Carnitina 500mg + Cafeína 65mg/5ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:55.20, perUnit:5.52},
-  {cod:549, name:'MIC (B12+Met+Ino+Col)/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:106.50, perUnit:10.65},
-  {cod:550, name:'L-Metionina 100mg/2ml', via:'EV/IM/ID/SC', apres:'Cx 10 amp', price:48.82, perUnit:4.88},
-  {cod:551, name:'L-Ornitina 150mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:62.79, perUnit:6.28},
-  {cod:552, name:'L-Taurina 200mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:44.30, perUnit:4.43},
-  {cod:553, name:'L-Theanina 50mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:64.50, perUnit:6.45},
-  {cod:554, name:'L-Triptofano 50mg/5ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:42.70, perUnit:4.27},
-  {cod:621, name:'Melatonina 10mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:198.97, perUnit:19.90},
-  {cod:622, name:'Melatonina 3mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:139.44, perUnit:13.94},
-  {cod:624, name:'Metilfolato 3500mcg/1ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:164.74, perUnit:16.47},
-  {cod:645, name:'MSM 15% - 10ml', via:'EV/IM/SC', apres:'Cx 5 amp', price:96.52, perUnit:19.30},
-  {cod:625, name:'N-Acetil Cisteína 300mg/2ml', via:'EV/IM', apres:'Cx 10 amp', price:53.37, perUnit:5.34},
-  {cod:626, name:'NADH 50mg pó liofilizado', via:'EV/IM/SC', apres:'Cx 4 fr', price:209.47, perUnit:52.37},
-  {cod:558, name:'Picolinato de Cromo 100mcg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:48.80, perUnit:4.88},
-  {cod:562, name:'PQQ 5mg/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:131.20, perUnit:13.12},
-  {cod:563, name:'Resveratrol 5mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:87.70, perUnit:8.77},
-  {cod:630, name:'SAMe 200mg/2ml', via:'EV/IM', apres:'Cx 10 amp', price:265.12, perUnit:26.51},
-  {cod:631, name:'Selênio 80mcg/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:40.74, perUnit:4.07},
-  {cod:657, name:'Sulfato de Magnésio 10% - 10ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:39.69, perUnit:3.97},
-  {cod:564, name:'Silício 10mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:53.20, perUnit:5.32},
-  {cod:565, name:'Sulfato de Cobre 500mcg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:36.54, perUnit:3.65},
-  {cod:566, name:'Sulfato de Magnésio 200mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:40.42, perUnit:4.04},
-  {cod:568, name:'Sulfato de Zinco 20mg/2ml', via:'EV/IM/ID', apres:'Cx 10 amp', price:38.83, perUnit:3.88},
-  {cod:569, name:'Sulfato de Zinco + Magnésio/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:47.10, perUnit:4.71},
-  {cod:570, name:'Teacrina 50mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:138.40, perUnit:13.84},
-  {cod:516, name:'BCAA (Leu+Ile+Val) 10mg/ml - 2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:76.86, perUnit:7.69},
-  {cod:517, name:'BCAA + HMB 50mg/5ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:217.20, perUnit:21.72},
-  {cod:518, name:'Benzopirona 1mg/2ml', via:'IM/SC/ID', apres:'Cx 10 amp', price:42.52, perUnit:4.25},
-  {cod:520, name:'Cafeína 120mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:42.84, perUnit:4.28},
-  {cod:521, name:'Cafeína 50mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:39.92, perUnit:3.99},
-  {cod:529, name:'Desoxicolato de Sódio 50mg/ml - 2ml', via:'SC', apres:'Cx 10 amp', price:89.98, perUnit:9.00},
-  {cod:530, name:'DMSO 20mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:38.22, perUnit:3.82},
-  {cod:629, name:'Piracetam 500mg/1ml', via:'EV/IM', apres:'Cx 10 amp', price:83.89, perUnit:8.39},
-  {cod:560, name:'Pool Oligominerais (Si+Cu+Zn+Mg+Cr)/2ml', via:'IM/SC/ID', apres:'Cx 10 amp', price:64.99, perUnit:6.50},
-  {cod:561, name:'Piruvato de Sódio 20mg/2ml', via:'SC/ID', apres:'Cx 10 amp', price:88.20, perUnit:8.82},
+const f=v=>'R$ '+v.toFixed(2).replace('.',',');
+// PHD
+const PA=[
+{c:501,n:'5-OH-Triptofano 10mg/2ml',v:'EV/IM/SC',a:'Cx10',p:4.25},{c:598,n:'Acetil-L-Carnitina 600mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:9.30},
+{c:502,n:'Ác. Alfa Lipóico 10mg/2ml',v:'EV/IM/ID',a:'Cx10',p:4.67},{c:503,n:'Ác. Alfa Lipóico 600mg/20ml',v:'EV/IM/ID',a:'Cx10fr',p:30.95},
+{c:599,n:'Ácido Fólico 10mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:5.15},{c:640,n:'Citrulina 100mg/2ml',v:'EV/IM/SC',a:'Cx10',p:5.86},
+{c:609,n:'Cloreto de Magnésio 400mg/1ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.46},{c:523,n:'Coenzima Q10 100mg/1ml',v:'IM',a:'Cx10',p:26.99},
+{c:525,n:'Colina 200mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.22},{c:527,n:'Crisina 100mcg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:11.47},
+{c:531,n:'DMAE 140mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:11.29},{c:532,n:'DMAE 60mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:7.82},
+{c:533,n:'D-Pantenol 50mg/ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.60},{c:642,n:'D-Ribose 500mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:9.73},
+{c:538,n:'GABA 25mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:8.35},{c:643,n:'Glutationa 250mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:13.92},
+{c:540,n:'HMB 50mg/2ml',v:'EV/IM/SC',a:'Cx10',p:8.00},{c:541,n:'Inositol 200mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:6.12},
+{c:542,n:'Inositol+Taurina 200mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:6.61},{c:544,n:'L-Fenilalanina 50mg/2ml',v:'EV/IM/SC',a:'Cx10',p:4.30},
+{c:545,n:'L-Arginina 1000mg/2ml',v:'EV/IM/SC',a:'Cx10',p:4.88},{c:547,n:'L-Carnitina 600mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:8.15},
+{c:614,n:'L-Glicina 100mg/2ml',v:'EV/IM/SC',a:'Cx10',p:4.46},{c:615,n:'L-Glutamina 150mg/2ml',v:'EV/IM',a:'Cx10',p:4.67},
+{c:618,n:'L-Lisina 300mg/2ml',v:'EV/IM',a:'Cx10',p:4.88},{c:619,n:'L-Prolina 600mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:8.77},
+{c:549,n:'MIC (B12+Met+Ino+Col)/2ml',v:'EV/IM/SC',a:'Cx10',p:10.65},{c:550,n:'L-Metionina 100mg/2ml',v:'EV/IM/SC',a:'Cx10',p:4.88},
+{c:551,n:'L-Ornitina 150mg/2ml',v:'EV/IM/SC',a:'Cx10',p:6.28},{c:552,n:'L-Taurina 200mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.43},
+{c:553,n:'L-Theanina 50mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:6.45},{c:554,n:'L-Triptofano 50mg/5ml',v:'EV/IM/SC',a:'Cx10',p:4.27},
+{c:621,n:'Melatonina 10mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:19.90},{c:622,n:'Melatonina 3mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:13.94},
+{c:624,n:'Metilfolato 3500mcg/1ml',v:'EV/IM/SC',a:'Cx10',p:16.47},{c:625,n:'N-Acetil Cisteína 300mg/2ml',v:'EV/IM',a:'Cx10',p:5.34},
+{c:626,n:'NADH 50mg pó',v:'EV/IM/SC',a:'Cx4fr',p:52.37},{c:558,n:'Picolinato Cromo 100mcg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.88},
+{c:562,n:'PQQ 5mg/2ml',v:'EV/IM/SC',a:'Cx10',p:13.12},{c:563,n:'Resveratrol 5mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:8.77},
+{c:630,n:'SAMe 200mg/2ml',v:'EV/IM',a:'Cx10',p:26.51},{c:631,n:'Selênio 80mcg/1ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.07},
+{c:564,n:'Silício 10mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:5.32},{c:566,n:'Sulf. Magnésio 200mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.04},
+{c:568,n:'Sulf. Zinco 20mg/2ml',v:'EV/IM/ID',a:'Cx10',p:3.88},{c:570,n:'Teacrina 50mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:13.84},
+{c:516,n:'BCAA (Leu+Ile+Val)/2ml',v:'EV/IM/SC',a:'Cx10',p:7.69},{c:520,n:'Cafeína 120mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.28},
+{c:521,n:'Cafeína 50mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:3.99},{c:629,n:'Piracetam 500mg/1ml',v:'EV/IM',a:'Cx10',p:8.39},
+{c:560,n:'Pool Oligominerais/2ml',v:'IM/SC/ID',a:'Cx10',p:6.50},{c:548,n:'L-Carnitina 500mg+Cafeína/5ml',v:'EV/IM/SC/ID',a:'Cx10',p:5.52},
+];
+const PV=[
+{c:572,n:'Biotina 10mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.88},{c:573,n:'Complexo B c/B1 /1ml',v:'EV/IM/SC/ID',a:'Cx10',p:6.00},
+{c:574,n:'Complexo B s/B1 /2ml',v:'EV/IM/SC',a:'Cx10',p:4.40},{c:649,n:'Trio Metilador/2ml',v:'EV/IM',a:'Cx10',p:36.99},
+{c:575,n:'B12 Ciano 2500mcg/1ml',v:'EV/IM/SC/ID',a:'Cx10',p:6.35},{c:576,n:'B12 Metil 2500mcg/1ml',v:'EV/IM/SC/ID',a:'Cx10',p:23.68},
+{c:623,n:'B12 Metil 5000mcg/1ml',v:'EV/IM/SC/ID',a:'Cx10',p:38.12},{c:578,n:'B6 Piridoxina 50mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:3.94},
+{c:580,n:'Vitamina C 20%/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.72},{c:635,n:'Vitamina C 1,2g/5ml',v:'EV/IM/SC/ID',a:'Cx10',p:5.41},
+{c:636,n:'D3 100.000UI/1ml',v:'IM',a:'Cx5',p:15.22},{c:637,n:'D3 600.000UI/1ml',v:'IM',a:'Cx5',p:22.87},
+{c:638,n:'K2 MK7 1300mcg/1ml',v:'IM',a:'Cx10',p:27.23},{c:586,n:'K2+D3 600kUI/1ml',v:'IM',a:'Cx10',p:28.10},
+];
+const PO=[
+{c:590,n:'Lidocaína 40mg/2ml',v:'IM/SC/ID',a:'Cx10',p:4.40},{c:591,n:'Procaína 40mg/2ml',v:'EV/IM/SC/ID',a:'Cx10',p:4.28},
+{c:593,n:'Procaína 200mg/10ml',v:'EV/IM/SC/ID',a:'Cx10fr',p:10.00},{c:595,n:'Nanofat Anti-aging/2ml',v:'ID',a:'Cx10',p:6.50},
+{c:597,n:'Nanofat Tripeptídeo 41/2ml',v:'SC',a:'Cx10',p:18.22},{c:226,n:'PDRN 80mg/4ml',v:'ID',a:'Cx4fr',p:126.38},
+];
+const PP=[
+{n:'Perda de Peso I',c:321,s:5,pr:187.50,d:'Ativador metabólico'},{n:'Perda de Peso II',c:322,s:5,pr:197.50,d:'Termogênico'},
+{n:'Detox Hepático',c:362,s:5,pr:239.50,d:'Fase 1'},{n:'Lipo Detox',c:328,s:5,pr:206.50,d:'Fase 2'},
+{n:'Redução Apetite',c:325,s:5,pr:223.90,d:'Inibidor+ativador'},{n:'Low Carb',c:326,s:5,pr:187.20,d:'Saciedade carb'},
+{n:'PDRN Multi',c:1719,s:2,pr:369.50,d:'PDRN+47 ativos'},{n:'Polirevitalizante NC160',c:1716,s:5,pr:513.50,d:'AH+vit+min+aa'},
+{n:'Skinbooster Lifting',c:216,s:4,pr:259.90,d:'AH 3%+ALA'},{n:'Rejuvenescimento 50+',c:202,s:4,pr:209.47,d:'ADN+Nanofat'},
+];
+// FORMÉDICA
+const FP=[
+{n:'Ansiedade',c:13723,d:'L-Fenil + Ino/Tau×3 + Procaína',k:'5amp=10mL'},
+{n:'Ansiedade + Suporte Depressão',c:21191,d:'5-HTP + Procaína',k:'2amp=4mL'},
+{n:'Antifadiga + Hipertrofia Musc.',c:21193,d:'Beta Alanina + D-Ribose + Lido + PQQ',k:'4amp=8mL'},
+{n:'Antifadiga Mitocondrial 1',c:21194,d:'D-Ribose + L-Carnitina + Mg + PQQ + B3',k:'5amp=10mL'},
+{n:'Antifadiga Mitocondrial 2',c:21195,d:'Complexo B c/B1 + D-Ribose + L-Carnitina',k:'3amp=5mL'},
+{n:'Antioxidante',c:21196,d:'VitC + Glutationa + NAC + PQQ + B3',k:'5amp=10mL'},
+{n:'Ativador Metabolismo',c:21197,d:'Cafeína + Cromo + HMB + L-Carnitina + PQQ',k:'5amp=10mL'},
+{n:'Baixa Imunidade 1',c:21199,d:'CoQ10 + L-Teanina + Selênio',k:'3amp=5mL'},
+{n:'Baixa Imunidade 2',c:21202,d:'CoQ10 + L-Lisina + L-Teanina + PQQ + Se',k:'5amp=11mL'},
+{n:'Chroma Care (Cabelo Branco)',c:21444,d:'Cu + Pantenol + Met + Metilfolato + PQQ + MetilB12',k:'6amp=10mL'},
+{n:'Cognição',c:21205,d:'Colina Citrato + NADH 50mg',k:'1amp+1fr=12mL'},
+{n:'Colágeno (síntese)',c:21206,d:'AH/Condroitina + DMAE + L-Prolina + Silício',k:'4amp=8mL'},
+{n:'Controle Ansiedade/Apetite 1',c:21189,d:'5-HTP+Cromo+Ino/Tau+L-Teanina (TPM/Compulsão)',k:'4amp=7mL'},
+{n:'Controle Ansiedade/Apetite 2',c:21183,d:'5-HTP+Ino/Tau+L-Carn+L-Fenil+L-Orn+L-Teanina',k:'6amp=11mL'},
+{n:'Detox',c:21207,d:'CompB s/B1+Curcumina+L-Carn+Lido+NAC+MetilB12',k:'6amp=11mL'},
+{n:'Disposição',c:21188,d:'Cafeína+CoQ10+L-Carnitina+Lido+Piracetam',k:'5amp=10mL'},
+{n:'Dor Articular',c:21211,d:'Condroitina+Curcumina',k:'2amp=4mL'},
+{n:'Dores Crônicas 1 (c/ neural)',c:21186,d:'Curcumina+Glutationa+Procaína',k:'3amp=6mL'},
+{n:'Dores Crônicas 2 (s/ neural)',c:21187,d:'Curcumina+Glutationa+Lido',k:'3amp=6mL'},
+{n:'Firmeza/Elasticidade (Flacidez)',c:21212,d:'VitC+Pantenol+DMAE+Lido',k:'4amp=8mL'},
+{n:'Fortalecimento Capilar',c:21213,d:'Biotina+Silício×2',k:'3amp=6mL'},
+{n:'Ganho Massa/Hipertrofia 1',c:21214,d:'Colina+HMB+L-Carn+L-Glic+L-Orn (5mL/glúteo+3mL deltóide)',k:'5amp=13mL'},
+{n:'Ganho Massa/Hipertrofia 2',c:21216,d:'HMB+Ino/Tau+L-Carn+L-Orn',k:'4amp=8mL'},
+{n:'Ganho Massa/Hipertrofia 3',c:21217,d:'Colina+HMB+L-Carn+L-Glutamina+L-Orn',k:'5amp=10mL'},
+{n:'Glute Sculpt',c:20666,d:'BCAA+Cromo+Curcumina+HMB+Procaína',k:'5amp=10mL'},
+{n:'Glute Glam',c:20668,d:'VitC+CoQ10+DMAE+Lido+Silício',k:'5amp=10mL'},
+{n:'Hipermass (Massa Magra)',c:20432,d:'HMB+L-Arg50%+L-Orn+PQQ+Proc/Caf',k:'5amp=10mL'},
+{n:'Imuno Shot',c:20658,d:'CompB+Curcumina+VitC+Timomodulina (2 seringas)',k:'4amp=7mL'},
+{n:'Inflamação Power',c:21185,d:'VitC+AH/Condroitina+ColágenoII+Lido',k:'4amp=7mL'},
+{n:'Inibidor Aromatase 0,1mg/mL',c:12285,d:'Anastrozol0,1+Ino/Tau×2+L-Fenil+Procaína',k:'5amp=10mL'},
+{n:'Inibidor Aromatase 1,0mg/mL',c:12286,d:'Anastrozol1,0+Ino/Tau×2+L-Fenil+Procaína',k:'5amp=9mL'},
+{n:'IM Acelerador Gorduras',c:10462,d:'Hialuronidase3000+L-Carn+Ino/Tau×3+Proc/Caf',k:'1fr+5amp'},
+{n:'IM c/ Fatores',c:10822,d:'Hialuronidase+L-Carn+Ino/Tau×2+Oligo1+Proc/Caf',k:'1fr+5amp'},
+{n:'IM c/ Fatores+Trip41',c:14195,d:'Hialuronidase+Trip41+L-Carn+Ino/Tau+Oligo1+Proc/Caf',k:'1fr+5amp'},
+{n:'IM c/ Trip41',c:14194,d:'Hialuronidase+Trip41+L-Carn+Ino/Tau×2+Proc/Caf',k:'1fr+5amp'},
+{n:'IM s/ Hialuronidase',c:10721,d:'L-Carn+Ino/Tau×3+Proc/Caf',k:'5amp=10mL'},
+{n:'Melhora da Pele (Colágeno)',c:21218,d:'Biotina+Pantenol+L-Lisina+L-Prolina+Lido',k:'5amp=13mL'},
+{n:'Obesemix',c:10465,d:'L-Fenil+L-Orn+L-Carn+Proc/Caf',k:'4amp=8mL'},
+{n:'Obesemix c/ Tripeptide',c:17922,d:'L-Fenil+Trip41+L-Orn+L-Carn+Proc/Caf',k:'5amp=10mL'},
+{n:'Obesemix II',c:11423,d:'L-Fenil+Crisina+L-Orn+L-Carn+Proc/Caf',k:'5amp=10mL'},
+{n:'Obesemix II c/ Tripeptide',c:18228,d:'Trip41+Crisina+L-Orn+L-Carn+Proc/Caf+L-Fenil(deltóide)',k:'6amp=12mL'},
+{n:'Pele Cabelo Unhas 1',c:21221,d:'VitC+Pantenol+L-Lisina+L-Prolina+Lido',k:'5amp=13mL'},
+{n:'Pele Cabelo Unhas 2',c:21224,d:'VitC+Biotina+L-Lisina+L-Prolina',k:'4amp=11mL'},
+{n:'Performance Atlética',c:21225,d:'BetaAlanina+Cafeína+NADH+PQQ+Procaína',k:'4amp+1fr'},
+{n:'Produção de Colágeno',c:21226,d:'VitC5mL+L-Prolina+Silício+Procaína',k:'4amp=10mL'},
+{n:'Proteção Articular/Inflam.',c:21227,d:'ColágenoII+Condroitina+Lido',k:'3amp=5mL'},
+{n:'Queima Carboidratos',c:21228,d:'5-HTP+Cu+Cromo+HMB+L-Carnitina',k:'5amp=10mL'},
+{n:'Recuperação Adrenal',c:13517,d:'Metilprednisolona 40mg (1×/mês)',k:'1fr=2mL'},
+{n:'Serenity Shot',c:20433,d:'Crisina+GABA+Ino/Tau+Pic.Cromo+Procaína',k:'5amp=10mL'},
+{n:'Síndrome Metabólica',c:21229,d:'BCAA+Cafeína+Cromo+D-Ribose+L-Carnitina',k:'5amp=10mL'},
+{n:'Sono Profundo (Insônia)',c:21230,d:'5-HTP+L-Teanina+Mg+VitB6',k:'4amp=10mL'},
+{n:'Suporte Fibromialgia',c:21238,d:'5-HTP+CoQ10+NADH10mg+PQQ',k:'3amp+1fr'},
+{n:'Suporte Adrenal',c:21239,d:'5-HTP+VitC+L-Teanina+Mg+Se',k:'5amp=9mL'},
+{n:'Suporte Alzheimer',c:21182,d:'CoQ10+Colina+L-Carn+NAC+NADH+Piracetam',k:'5amp+1fr'},
+{n:'Suporte Cognitivo',c:21240,d:'CoQ10+Colina+DMAE+L-Carn+Piracetam',k:'5amp=10mL'},
+{n:'Termogênico',c:20792,d:'Cafeína+HMB+Ino/Tau+Lido',k:'4amp=8mL'},
+{n:'Trio de Vitaminas',c:21242,d:'Metilfolato+Procaína+MetilB12+D3 600kUI (oleosa=separar)',k:'4amp=5mL'},
+{n:'Trio Metilação',c:21176,d:'Metilfolato+VitB6(Piridoxina)+MetilB12',k:'3amp=7mL'},
+{n:'Trio Metilação 2',c:21448,d:'Metilfolato+Piridoxal5P+MetilB12',k:'3amp=3mL'},
 ];
 
-const VITAMINAS = [
-  {cod:600, name:'ADEK² 100 (A+D100k+E+K2)/2ml', via:'IM', apres:'Cx 5 amp', price:281.40, perUnit:56.28},
-  {cod:601, name:'ADEK² 100 (A+D100k+E+K2)/2ml', via:'IM', apres:'Cx 10 amp', price:509.25, perUnit:50.93},
-  {cod:602, name:'ADEK² 600 (A+D600k+E+K2)/2ml', via:'IM', apres:'Cx 5 amp', price:313.95, perUnit:62.79},
-  {cod:603, name:'ADEK² 600 (A+D600k+E+K2)/2ml', via:'IM', apres:'Cx 10 amp', price:627.27, perUnit:62.73},
-  {cod:572, name:'Biotina 10mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:48.82, perUnit:4.88},
-  {cod:573, name:'Complexo B (c/ B1)/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:59.98, perUnit:6.00},
-  {cod:574, name:'Complexo B (s/ B1)/2ml', via:'EV/IM/SC', apres:'Cx 10 amp', price:43.95, perUnit:4.40},
-  {cod:649, name:'Trio Metilador (B6+Metilfolato+MetilB12)/2ml', via:'EV/IM', apres:'Cx 10 amp', price:369.87, perUnit:36.99},
-  {cod:575, name:'Vitamina B12 Cianocobalamina 2500mcg/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:63.52, perUnit:6.35},
-  {cod:576, name:'Vitamina B12 Metilcobalamina 2500mcg/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:236.75, perUnit:23.68},
-  {cod:623, name:'Vitamina B12 Metilcobalamina 5000mcg/1ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:381.20, perUnit:38.12},
-  {cod:577, name:'Vitamina B5 (D-Pantenol) 50mg/ml - 2ml', via:'IM/SC/ID', apres:'Cx 10 amp', price:46.15, perUnit:4.62},
-  {cod:578, name:'Vitamina B6 (Piridoxina) 50mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:39.37, perUnit:3.94},
-  {cod:580, name:'Vitamina C 20%/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:47.19, perUnit:4.72},
-  {cod:635, name:'Vitamina C 1,2g/5ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:54.10, perUnit:5.41},
-  {cod:658, name:'Vitamina D3 10.000UI/1ml', via:'IM', apres:'Cx 5 amp', price:55.54, perUnit:11.11},
-  {cod:636, name:'Vitamina D3 100.000UI/1ml', via:'IM', apres:'Cx 5 amp', price:76.10, perUnit:15.22},
-  {cod:637, name:'Vitamina D3 600.000UI/1ml', via:'IM', apres:'Cx 5 amp', price:114.34, perUnit:22.87},
-  {cod:638, name:'Vitamina K2 MK7 1300mcg/1ml', via:'IM', apres:'Cx 10 amp', price:272.26, perUnit:27.23},
-  {cod:586, name:'Vitamina K2 MK7 + D3 600kUI/1ml', via:'IM', apres:'Cx 10 amp', price:280.98, perUnit:28.10},
-];
+let cart=[],sup='phd',tab='ativos';
+const TD={ativos:PA,vitaminas:PV,outros:PO,protocolos:PP};
 
-const OUTROS = [
-  {cod:587, name:'Glicose 75%/3ml (Esclerosante)', via:'EV', apres:'Cx 10 amp', price:37.90, perUnit:3.79},
-  {cod:589, name:'Lidocaína 2%/10ml', via:'IM/SC/ID', apres:'Cx 10 fr', price:43.97, perUnit:4.40},
-  {cod:590, name:'Lidocaína 40mg/2ml', via:'IM/SC/ID', apres:'Cx 10 amp', price:43.97, perUnit:4.40},
-  {cod:591, name:'Procaína 40mg/2ml', via:'EV/IM/SC/ID', apres:'Cx 10 amp', price:42.84, perUnit:4.28},
-  {cod:593, name:'Procaína 200mg/10ml', via:'EV/IM/SC/ID', apres:'Cx 10 fr', price:99.96, perUnit:10.00},
-  {cod:594, name:'Nanofatores Capilar (IGF+EGF+Cu+DMSO)/2ml', via:'ID', apres:'Cx 10 amp', price:64.95, perUnit:6.50},
-  {cod:595, name:'Nanofatores Anti-aging (TGFB3+IDP2+IGF)/2ml', via:'ID', apres:'Cx 10 amp', price:64.95, perUnit:6.50},
-  {cod:596, name:'Nanofator TGP2 20mg/2ml', via:'ID', apres:'Cx 10 amp', price:64.95, perUnit:6.50},
-  {cod:597, name:'Nanofator Tripeptídeo 41 24mg/2ml', via:'SC', apres:'Cx 10 amp', price:182.17, perUnit:18.22},
-  {cod:226, name:'PDRN 80mg/4ml', via:'ID', apres:'Cx 4 fr', price:505.50, perUnit:126.38},
-];
+function setSup(s){sup=s;document.querySelectorAll('.stab').forEach(t=>{t.className='stab';if(t.dataset.s===s)t.classList.add(s==='phd'?'ap':'af')});
+if(s==='phd'){tab='ativos';rT(['ativos','vitaminas','outros','protocolos'])}else{tab='protocolos';rT(['protocolos'])}
+document.getElementById('sI').value='';rCat()}
 
-const PROTOCOLOS = [
-  {name:'Perda de Peso I', cod:321, sessions:5, price:187.50, desc:'Ativador metabólico - Colina+Inositol+Taurina+MIC+L-Carnitina'},
-  {name:'Perda de Peso II', cod:322, sessions:5, price:197.50, desc:'Termogênico - HMB+MIC+L-Carnitina+L-Ornitina'},
-  {name:'Detox Hepático', cod:362, sessions:5, price:239.50, desc:'Fase 1 - Inositol+Taurina+NAC+Metilfolato'},
-  {name:'Lipo Detox', cod:328, sessions:5, price:206.50, desc:'Fase 2 - Resveratrol+L-Carnitina+Cafeína'},
-  {name:'Redução de Apetite', cod:325, sessions:5, price:223.90, desc:'L-Theanina+Inositol+Taurina+MIC+L-Carnitina'},
-  {name:'Low Carb', cod:326, sessions:5, price:187.20, desc:'L-Fenilalanina+Mg+HMB+L-Carnitina+Cr'},
-  {name:'PDRN Multi', cod:1719, sessions:2, price:369.50, desc:'PDRN 80mg + 47 multiativos'},
-  {name:'Polirevitalizante NC 160', cod:1716, sessions:5, price:513.50, desc:'AH+Condroitina+13vit+7min+23aa'},
-  {name:'Skinbooster Lifting', cod:216, sessions:4, price:259.90, desc:'AH 3% + Ác. Alfa Lipóico + Condroitin'},
-  {name:'Rejuvenescimento 50+', cod:202, sessions:4, price:209.47, desc:'ADN+Piruvato+Pantenol+Nanofatores'},
-];
+function rT(ts){document.getElementById('tC').innerHTML=ts.map(t=>`<div class="tab ${t===tab?'active':''}" data-t="${t}" onclick="sT('${t}')">${t[0].toUpperCase()+t.slice(1)}</div>`).join('')}
 
-// ======= STATE =======
-let cart = [];
-let currentTab = 'ativos';
+function sT(t){tab=t;document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e.dataset.t===t));document.getElementById('sI').value='';rCat()}
 
-// ======= FUNCTIONS =======
-function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+function rCat(){
+const L=document.getElementById('cL'),q=document.getElementById('sI').value.toLowerCase().trim();
+if(sup==='fm'){
+const fl=FP.filter(p=>!q||p.n.toLowerCase().includes(q)||p.d.toLowerCase().includes(q)||String(p.c).includes(q));
+L.innerHTML=fl.map(p=>`<div class="ci" onclick="aFM(${p.c})"><div><div class="n"><span class="dot df"></span>${p.n}</div><div class="d">Cód.${p.c} · ${p.k} · ${p.d}</div></div><div></div><button class="ab fm" onclick="event.stopPropagation();aFM(${p.c})">+</button></div>`).join('');
+document.getElementById('iC').textContent=fl.length+' protocolos FM';return}
+if(tab==='protocolos'){
+const fl=PP.filter(p=>!q||p.n.toLowerCase().includes(q)||p.d.toLowerCase().includes(q)||String(p.c).includes(q));
+L.innerHTML=fl.map(p=>`<div class="ci" onclick="aPP(${p.c})"><div><div class="n"><span class="dot dp"></span>${p.n}</div><div class="d">Cód.${p.c} · ${p.s}sess · ${p.d}</div></div><div style="text-align:right"><div class="p">${f(p.pr)}</div><div class="u">${p.s}sess</div></div><button class="ab" onclick="event.stopPropagation();aPP(${p.c})">+</button></div>`).join('');
+document.getElementById('iC').textContent=fl.length+' proto PHD';return}
+const data=TD[tab]||[];
+const fl=data.filter(d=>!q||d.n.toLowerCase().includes(q)||String(d.c).includes(q)||d.v.toLowerCase().includes(q));
+L.innerHTML=fl.map(d=>`<div class="ci"><div><div class="n"><span class="dot do"></span>${d.n}</div><div class="d">Cód.${d.c} · ${d.v} · ${d.a}</div></div><div style="text-align:right"><div class="p">${f(d.p)}</div><div class="u">/amp</div></div><button class="ab" onclick="aPHD(${d.c},'${tab}')">+</button></div>`).join('');
+document.getElementById('iC').textContent=fl.length+' itens PHD'}
 
-function getDataForTab(tab) {
-  if (tab === 'ativos') return ATIVOS;
-  if (tab === 'vitaminas') return VITAMINAS;
-  if (tab === 'outros') return OUTROS;
-  return [];
-}
+function aPHD(c,t){const d=TD[t],i=d.find(x=>x.c===c);if(!i)return;const e=cart.find(x=>x.c===c&&x.s==='phd'&&x.t==='u');if(e)e.q++;else cart.push({c,n:i.n,p:i.p,q:1,t:'u',s:'phd'});rC()}
+function aPP(c){const i=PP.find(x=>x.c===c);if(!i)return;const e=cart.find(x=>x.c===c&&x.t==='p'&&x.s==='phd');if(e)e.q++;else cart.push({c,n:i.n,p:i.pr,q:1,t:'p',s:'phd',ss:i.s});rC()}
+function aFM(c){const i=FP.find(x=>x.c===c);if(!i)return;const e=cart.find(x=>x.c===c&&x.s==='fm');if(e)e.q++;else cart.push({c,n:'[FM] '+i.n,p:0,q:1,t:'p',s:'fm',k:i.k,d:i.d});rC()}
+function rm(i){cart.splice(i,1);rC()}
+function cq(i,d){cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);rC()}
 
-function getCatClass(tab) {
-  const m = {ativos:'cat-orto', vitaminas:'cat-vita', outros:'cat-anest', protocolos:'cat-proto'};
-  return m[tab] || 'cat-orto';
-}
+function rC(){
+const L=document.getElementById('cLi'),mk=parseFloat(document.getElementById('mI').value)||0;
+if(!cart.length){L.innerHTML='<div class="ce"><div class="ic">💉</div>Selecione os ativos para compor o soro</div>';
+document.getElementById('cC').textContent='0';document.getElementById('tCo').textContent='R$ 0,00';
+document.getElementById('tA').textContent='0';document.getElementById('tP').textContent='R$ 0,00';return}
+L.innerHTML=cart.map((c,i)=>`<div class="citem"><div><div class="cn">${c.n}<span class="sp ${c.s==='phd'?'phd':'fm'}">${c.s==='phd'?'PHD':'FM'}</span></div></div><div class="cp2">${c.p>0?f(c.p*c.q):'consultar'}</div><div class="qc"><button class="qb" onclick="cq(${i},-1)">−</button><span class="qv">${c.q}</span><button class="qb" onclick="cq(${i},1)">+</button></div><button class="rb" onclick="rm(${i})">✕</button></div>`).join('');
+const tc=cart.reduce((s,c)=>s+c.p*c.q,0),ta=cart.reduce((s,c)=>s+c.q,0),tp=tc*(1+mk/100);
+document.getElementById('cC').textContent=cart.length;document.getElementById('tCo').textContent=f(tc);
+document.getElementById('tA').textContent=ta;document.getElementById('tP').textContent=tc>0?f(tp):'sob consulta'}
 
-function renderCatalog() {
-  const list = document.getElementById('catalogList');
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+function showPrint(){
+if(!cart.length)return;const mk=parseFloat(document.getElementById('mI').value)||0;
+const pn=document.getElementById('pN').value||'—',dt=document.getElementById('bD').value||new Date().toISOString().split('T')[0];
+const cl=document.getElementById('cS').value,vi=document.getElementById('vS').value;
+const tc=cart.reduce((s,c)=>s+c.p*c.q,0),tp=tc*(1+mk/100),fd=dt.split('-').reverse().join('/');
+const rows=cart.map(c=>`<tr><td>${c.n}</td><td style="text-align:center">${c.q}</td><td style="text-align:right">${c.p>0?f(c.p*c.q*(1+mk/100)):'consultar'}</td></tr>`).join('');
+document.getElementById('pCo').innerHTML=`<h3>Orçamento de Soroterapia</h3><div class="cn2">${cl} · ${fd}</div><div style="margin-bottom:16px"><strong>Paciente:</strong> ${pn}<br><strong>Via:</strong> ${vi}</div><table><thead><tr><th>Ativo/Protocolo</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rows}</tbody></table><div class="tl g"><span>TOTAL</span><span>${tc>0?f(tp):'sob consulta'}</span></div><div style="margin-top:16px;font-size:11px;color:#80868b">Válido 30 dias. PHD do Brasil Rev.Fev/2026 + Formédica Ed.2023.11. ANVISA RDC 67/2007.</div><div class="pa"><button class="bp" onclick="window.print()">Imprimir</button><button class="bs" onclick="cP(null)">Fechar</button></div>`;
+document.getElementById('pO').classList.add('show')}
+function cP(e){if(!e||e.target===document.getElementById('pO'))document.getElementById('pO').classList.remove('show')}
 
-  if (currentTab === 'protocolos') {
-    const filtered = PROTOCOLOS.filter(p => 
-      !query || p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query) || String(p.cod).includes(query)
-    );
-    list.innerHTML = filtered.map(p => `
-      <div class="proto-item" onclick="addProtocol(${p.cod})">
-        <div class="proto-info">
-          <div class="proto-name"><span class="cat-dot cat-proto"></span>${p.name}</div>
-          <div class="proto-desc">Cód. ${p.cod} · ${p.sessions} sessões · ${p.desc}</div>
-        </div>
-        <div>
-          <div class="proto-price">${fmt(p.price)}</div>
-          <div style="font-size:10px;color:#80868b;text-align:right">${p.sessions} sessões</div>
-        </div>
-      </div>
-    `).join('');
-    document.getElementById('itemCount').textContent = filtered.length + ' protocolos';
-    return;
-  }
-
-  const data = getDataForTab(currentTab);
-  const filtered = data.filter(d =>
-    !query || d.name.toLowerCase().includes(query) || String(d.cod).includes(query) || d.via.toLowerCase().includes(query)
-  );
-
-  list.innerHTML = filtered.map(d => `
-    <div class="catalog-item">
-      <div>
-        <div class="item-name"><span class="cat-dot ${getCatClass(currentTab)}"></span>${d.name}</div>
-        <div class="item-detail">Cód. ${d.cod} · ${d.via} · ${d.apres}</div>
-      </div>
-      <div style="text-align:right">
-        <div class="item-price">${fmt(d.perUnit)}</div>
-        <div class="item-unit">por ampola</div>
-      </div>
-      <button class="add-btn" onclick="addToCart(${d.cod}, '${currentTab}')">+</button>
-    </div>
-  `).join('');
-
-  document.getElementById('itemCount').textContent = filtered.length + ' itens';
-}
-
-function addToCart(cod, tab) {
-  const data = getDataForTab(tab);
-  const item = data.find(d => d.cod === cod);
-  if (!item) return;
-  
-  const existing = cart.find(c => c.cod === cod && c.type === 'unit');
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({...item, qty: 1, type: 'unit', tab});
-  }
-  renderCart();
-}
-
-function addProtocol(cod) {
-  const proto = PROTOCOLOS.find(p => p.cod === cod);
-  if (!proto) return;
-  const existing = cart.find(c => c.cod === cod && c.type === 'protocol');
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({cod, name: proto.name, perUnit: proto.price, qty: 1, type: 'protocol', sessions: proto.sessions});
-  }
-  renderCart();
-}
-
-function removeFromCart(idx) { cart.splice(idx, 1); renderCart(); }
-
-function changeQty(idx, delta) {
-  cart[idx].qty += delta;
-  if (cart[idx].qty <= 0) cart.splice(idx, 1);
-  renderCart();
-}
-
-function clearCart() { cart = []; renderCart(); }
-
-function renderCart() {
-  const list = document.getElementById('cartList');
-  const markup = parseFloat(document.getElementById('markupInput').value) || 0;
-
-  if (cart.length === 0) {
-    list.innerHTML = '<div class="cart-empty"><div class="icon">💉</div>Selecione os ativos no catálogo<br>para compor o soro</div>';
-    document.getElementById('cartCount').textContent = '0 itens';
-    document.getElementById('totalCost').textContent = 'R$ 0,00';
-    document.getElementById('totalAmps').textContent = '0';
-    document.getElementById('totalPatient').textContent = 'R$ 0,00';
-    return;
-  }
-
-  list.innerHTML = cart.map((c, i) => `
-    <div class="cart-item">
-      <div class="ci-name">${c.name}${c.type === 'protocol' ? ' <span style="color:#d93025;font-size:10px">PROTO</span>' : ''}</div>
-      <div class="ci-price">${fmt(c.perUnit * c.qty)}</div>
-      <div class="qty-control">
-        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
-        <span class="qty-val">${c.qty}</span>
-        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
-      </div>
-      <button class="remove-btn" onclick="removeFromCart(${i})">✕</button>
-    </div>
-  `).join('');
-
-  const totalCost = cart.reduce((s, c) => s + c.perUnit * c.qty, 0);
-  const totalAmps = cart.reduce((s, c) => s + c.qty, 0);
-  const totalPatient = totalCost * (1 + markup / 100);
-
-  document.getElementById('cartCount').textContent = cart.length + ' itens';
-  document.getElementById('totalCost').textContent = fmt(totalCost);
-  document.getElementById('totalAmps').textContent = totalAmps;
-  document.getElementById('totalPatient').textContent = fmt(totalPatient);
-}
-
-function showPrint() {
-  if (cart.length === 0) return;
-  const markup = parseFloat(document.getElementById('markupInput').value) || 0;
-  const patient = document.getElementById('patientName').value || '—';
-  const date = document.getElementById('budgetDate').value || new Date().toISOString().split('T')[0];
-  const clinic = document.getElementById('clinicSelect').value;
-  const via = document.getElementById('viaSelect').value;
-  const totalCost = cart.reduce((s, c) => s + c.perUnit * c.qty, 0);
-  const totalPatient = totalCost * (1 + markup / 100);
-  const formattedDate = date.split('-').reverse().join('/');
-
-  const rows = cart.map(c => `
-    <tr>
-      <td>${c.name}</td>
-      <td style="text-align:center">${c.qty}</td>
-      <td style="text-align:right">${fmt(c.perUnit * c.qty * (1 + markup/100))}</td>
-    </tr>
-  `).join('');
-
-  document.getElementById('printContent').innerHTML = `
-    <h3>Orçamento de Soroterapia</h3>
-    <div class="clinic-name">${clinic} · ${formattedDate}</div>
-    <div style="margin-bottom:16px;">
-      <strong>Paciente:</strong> ${patient}<br>
-      <strong>Via:</strong> ${via}
-    </div>
-    <table>
-      <thead><tr><th>Ativo / Protocolo</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div class="total-line grand">
-      <span>TOTAL</span>
-      <span>${fmt(totalPatient)}</span>
-    </div>
-    <div style="margin-top:16px;font-size:11px;color:#80868b;">
-      Orçamento válido por 30 dias. Valores sujeitos a alteração sem aviso prévio.<br>
-      Ativos PHD do Brasil — Revisão Fev/2026. ANVISA RDC 67/2007.
-    </div>
-    <div class="print-actions">
-      <button class="btn-primary" onclick="window.print()">Imprimir</button>
-      <button class="btn-secondary" onclick="closePrint(null)">Fechar</button>
-    </div>
-  `;
-
-  document.getElementById('printOverlay').classList.add('show');
-}
-
-function closePrint(e) {
-  if (!e || e.target === document.getElementById('printOverlay')) {
-    document.getElementById('printOverlay').classList.remove('show');
-  }
-}
-
-// ======= EVENTS =======
-document.getElementById('searchInput').addEventListener('input', renderCatalog);
-document.getElementById('markupInput').addEventListener('input', renderCart);
-document.getElementById('budgetDate').valueAsDate = new Date();
-
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentTab = tab.dataset.tab;
-    document.getElementById('searchInput').value = '';
-    renderCatalog();
-  });
-});
-
-// Init
-renderCatalog();
+document.getElementById('sI').addEventListener('input',rCat);
+document.getElementById('mI').addEventListener('input',rC);
+document.getElementById('bD').valueAsDate=new Date();
+rT(['ativos','vitaminas','outros','protocolos']);rCat();
 </script>
 </body>
 </html>
