@@ -35,6 +35,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .sup-tab{flex:1;padding:11px 16px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;color:var(--text-dim);border-bottom:3px solid transparent;transition:var(--ease);user-select:none;-webkit-tap-highlight-color:transparent}
 .sup-tab:hover{color:var(--text)}.sup-tab.a-phd{color:var(--phd);background:var(--phd-bg);border-bottom-color:var(--phd)}.sup-tab.a-fm{color:var(--fm);background:var(--fm-bg);border-bottom-color:var(--fm)}
 .sup-tab.a-id{color:#2a7a2a;background:#e8f5ee;border-bottom-color:#2a7a2a}
+.sup-tab.a-ht{color:#8b5e34;background:#fdf3e8;border-bottom-color:#b8934e}
 .stabs{display:flex;padding:0 12px;border-bottom:1px solid var(--border-light);overflow-x:auto;scrollbar-width:none;gap:2px}.stabs::-webkit-scrollbar{display:none}
 .stab{padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:var(--ease);user-select:none;-webkit-tap-highlight-color:transparent}
 .stab:hover{color:var(--text)}.stab.on{color:var(--phd);border-bottom-color:var(--phd);font-weight:700}
@@ -124,10 +125,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 <div class="main">
 <div class="card">
 <div class="ch"><h2>Catálogo</h2><span class="badge" id="iC">0</span></div>
-<div class="sup-tabs"><div class="sup-tab a-phd" id="tP" onclick="setS('phd')">PHD do Brasil</div><div class="sup-tab" id="tF" onclick="setS('fm')">FM Injetáveis</div><div class="sup-tab" id="tID" onclick="setS('id')">FM Intradermo</div></div>
+<div class="sup-tabs"><div class="sup-tab a-phd" id="tP" onclick="setS('phd')">PHD do Brasil</div><div class="sup-tab" id="tF" onclick="setS('fm')">FM Injetáveis</div><div class="sup-tab" id="tID" onclick="setS('id')">FM Intradermo</div><div class="sup-tab" id="tHT" onclick="setS('ht')">Health Tech</div></div>
 <div class="stabs" id="sT"></div>
 <div class="cpills" id="cP" style="display:none"></div>
     <div class="cpills" id="cPID" style="display:none"></div>
+    <div class="stabs" id="sHT" style="display:none"></div>
+    <div class="cpills" id="cPHT" style="display:none"></div>
 <div class="vwarn" id="vW"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 1L1 13h12L7 1zM7 5v3M7 10.5v.5"/></svg><span id="vWT"></span></div>
 <div class="sbox"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="5"/><path d="M10 10l3.5 3.5"/></svg><input type="text" id="sI" placeholder="Buscar por nome, código ou composição…"></div>
 <div class="clist" id="cL"></div>
@@ -316,17 +319,253 @@ const FID=[
 ];
 const IDCATS=[{id:'Todos',ico:'📋'},{id:'Emagrecimento',ico:'🔥'},{id:'Gordura Localizada',ico:'💧'},{id:'Celulite',ico:'🫧'},{id:'Flacidez',ico:'🪡'},{id:'Lipedema',ico:'🦵'},{id:'Face',ico:'✨'},{id:'Capilar',ico:'💇'},{id:'Cicatrizes',ico:'🩹'}];
 
-let cart=[],sup='phd',ptab='ativos',fcat='Todos',idcat='Todos';
+
+const HTA=[
+{c:8000,n:'5-HTP 4mg/2mL',v:'EV/IM/SC',a:'Cx10',p:5.18,ml:2},
+{c:8001,n:'Acetil L-Carnitina 800mg/2mL',v:'EV/IM',a:'Cx10',p:10.41,ml:2},
+{c:8002,n:'Alanil Glutamina 200mg/2mL',v:'EV/IM',a:'Cx10',p:10.90,ml:2},
+{c:8003,n:'Alanil Glutamina 1g/10mL',v:'EV',a:'Cx10',p:22.27,ml:10},
+{c:8004,n:'Alfa-GPC 400mg/2mL',v:'EV/IM',a:'Cx10',p:19.01,ml:2},
+{c:8005,n:'BCAA 4mL (Leu+Ile+Val)',v:'EV/IM',a:'Cx15',p:12.97,ml:4},
+{c:8006,n:'Beta-Alanina 750mg/2mL',v:'EV/IM/SC',a:'Cx10',p:17.95,ml:2},
+{c:8007,n:'D-Ribose 500mg/2mL',v:'EV/IM/SC',a:'Cx10',p:14.01,ml:2},
+{c:8008,n:'GABA 25mg/2mL',v:'EV/IM',a:'Cx10',p:9.21,ml:2},
+{c:8009,n:'HMB 50mg/2mL',v:'EV/IM/SC',a:'Cx10',p:9.04,ml:2},
+{c:8010,n:'HMB 150mg/2mL',v:'EV/IM/SC',a:'Cx10',p:13.46,ml:2},
+{c:8011,n:'Inositol 1g/10mL',v:'EV',a:'Cx10',p:15.27,ml:10},
+{c:8012,n:'Inositol+Taurina 200mg/2mL',v:'EV/IM/SC',a:'Cx10',p:6.02,ml:2},
+{c:8013,n:'Isoleucina+Valina 0,3g/10mL',v:'EV',a:'Cx10',p:9.39,ml:10},
+{c:8014,n:'L-Arginina 50% 5g/10mL',v:'EV',a:'Cx10',p:16.81,ml:10},
+{c:8015,n:'L-Arginina 1g+Lido 1%/2mL',v:'IM/SC/ID',a:'Cx10',p:12.72,ml:2},
+{c:8016,n:'L-Carnitina 600mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:9.13,ml:2},
+{c:8017,n:'L-Carnosina 500mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:13.09,ml:2},
+{c:8018,n:'L-Citrulina 200mg+VitC 75mg/10mL',v:'EV',a:'Cx10',p:9.06,ml:10},
+{c:8019,n:'L-Fenilalanina 50mg/2mL',v:'EV/IM/SC',a:'Cx10',p:4.84,ml:2},
+{c:8020,n:'L-Glicina 75mg/2mL',v:'EV/IM/SC',a:'Cx10',p:4.23,ml:2},
+{c:8021,n:'L-Glutationa 0,1g/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:17.93,ml:2},
+{c:8022,n:'L-Glutationa 1g/10mL',v:'EV',a:'Cx10',p:57.01,ml:10},
+{c:8023,n:'L-Leucina 180mg/10mL',v:'EV',a:'Cx10',p:9.32,ml:10},
+{c:8024,n:'L-Lisina 300mg/2mL',v:'EV/IM/SC',a:'Cx10',p:5.08,ml:2},
+{c:8025,n:'L-Metionina 100mg/2mL',v:'EV/IM/SC',a:'Cx10',p:5.41,ml:2},
+{c:8026,n:'L-Ornitina 300mg/2mL',v:'EV/IM/SC',a:'Cx10',p:6.22,ml:2},
+{c:8027,n:'L-Prolina 500mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:8.88,ml:2},
+{c:8028,n:'L-Taurina 150mg/2mL',v:'EV/IM/SC',a:'Cx10',p:5.17,ml:2},
+{c:8029,n:'L-Taurina 500mg/5mL',v:'EV/IM',a:'Cx15',p:5.59,ml:5},
+{c:8030,n:'L-Theanina 100mg/2mL',v:'EV/IM/SC',a:'Cx10',p:11.98,ml:2},
+{c:8031,n:'L-Triptofano 100mg/10mL',v:'EV',a:'Cx10',p:6.71,ml:10},
+{c:8032,n:'M.A.P. EV 10mL (8aa)',v:'EV',a:'Cx10',p:19.03,ml:10},
+{c:8033,n:'Ác. Fólico 10mg/2mL',v:'EV/IM/SC',a:'Cx10',p:4.73,ml:2},
+{c:8034,n:'Biotina 10mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:5.20,ml:2},
+{c:8035,n:'Complexo B c/B1 1mL',v:'EV/IM/SC',a:'Cx10',p:6.17,ml:1},
+{c:8036,n:'Complexo B s/B1 2mL',v:'EV/IM/SC',a:'Cx10',p:4.28,ml:2},
+{c:8037,n:'Metilcobalamina 2500mcg/1mL',v:'EV/IM',a:'Cx10',p:22.93,ml:1},
+{c:8038,n:'Metilcobalamina 25mg/1mL',v:'EV/IM/SC',a:'Unit',p:41.42,ml:1},
+{c:8039,n:'Metilfolato 2,5mg/2mL',v:'EV/IM/SC',a:'Cx10',p:18.99,ml:2},
+{c:8040,n:'B12 Ciano 2500mcg/1mL',v:'EV/IM/SC',a:'Cx10',p:5.91,ml:1},
+{c:8041,n:'VitB1 Tiamina 100mg/1mL',v:'EV/IM/SC',a:'Cx10',p:4.52,ml:1},
+{c:8042,n:'VitB2 Riboflavina 50mg/5mL',v:'EV/IM',a:'Cx15',p:7.21,ml:5},
+{c:8043,n:'VitB3 Niacinamida 30mg/2mL',v:'EV/IM',a:'Cx10',p:4.64,ml:2},
+{c:8044,n:'VitB5 D-Pantenol 40mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:3.91,ml:2},
+{c:8045,n:'VitB6 Piridoxina 100mg/5mL',v:'EV/IM',a:'Cx15',p:5.01,ml:5},
+{c:8046,n:'VitC 20% 400mg/2mL',v:'EV/SC/ID',a:'Cx10',p:4.87,ml:2},
+{c:8047,n:'VitC 20% 1g/5mL',v:'EV',a:'Cx15',p:6.53,ml:5},
+{c:8048,n:'VitC 50% 5g/10mL',v:'EV',a:'Cx10',p:19.00,ml:10},
+{c:8049,n:'VitC 20% 10g/50mL FA',v:'EV',a:'Unit',p:32.89,ml:50},
+{c:8050,n:'VitD3 100.000UI/1mL',v:'IM',a:'Cx10',p:19.17,ml:1},
+{c:8051,n:'VitD3 600.000UI/1mL',v:'IM',a:'Cx10',p:22.60,ml:1},
+{c:8052,n:'VitE 200UI/1mL',v:'IM',a:'Cx10',p:6.50,ml:1},
+{c:8053,n:'VitK1 1mg/2mL',v:'IM',a:'Cx10',p:4.66,ml:2},
+{c:8054,n:'VitA 25000UI/2mL',v:'IM',a:'Cx10',p:8.25,ml:2},
+{c:8055,n:'CL Cálcio 10% 100mg/1mL',v:'EV',a:'Cx10',p:3.88,ml:1},
+{c:8056,n:'CL Cromo 100mcg/2mL',v:'EV/IM/SC',a:'Cx10',p:4.23,ml:2},
+{c:8057,n:'CL Magnésio 20% 6g/30mL FA',v:'EV',a:'Unit',p:11.71,ml:30},
+{c:8058,n:'Sulf. Cobre 0,5mg/2mL',v:'EV/ID',a:'Cx10',p:4.29,ml:2},
+{c:8059,n:'Sulf. Magnésio 200mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:4.22,ml:2},
+{c:8060,n:'Sulf. Magnésio 500mg/5mL',v:'EV/IM',a:'Cx15',p:4.79,ml:5},
+{c:8061,n:'Sulf. Magnésio 1g/10mL',v:'EV',a:'Cx10',p:5.72,ml:10},
+{c:8062,n:'Sulf. Manganês 20mg/2mL',v:'EV/IM',a:'Cx10',p:4.23,ml:2},
+{c:8063,n:'Sulf. Zinco 20mg/2mL',v:'EV',a:'Cx10',p:4.49,ml:2},
+{c:8064,n:'Selênio 80mcg/2mL',v:'EV',a:'Cx10',p:4.23,ml:2},
+{c:8065,n:'Silício 10mg/2mL',v:'IM/SC/ID',a:'Cx10',p:5.41,ml:2},
+{c:8066,n:'Vanádio 50mcg/1mL',v:'EV/IM/SC/ID',a:'Cx10',p:6.85,ml:1},
+{c:8067,n:'Ác. Lipóico 100mg/5mL',v:'EV/IM/SC/ID',a:'Cx15',p:10.41,ml:5},
+{c:8068,n:'Ác. Lipóico 600mg/24mL FA',v:'EV',a:'Unit',p:43.42,ml:24},
+{c:8069,n:'Ác. Ursólico 50mg/2mL',v:'IM',a:'Cx10',p:14.30,ml:2},
+{c:8070,n:'ATP 20mg/2mL',v:'EV',a:'Cx10',p:5.95,ml:2},
+{c:8071,n:'Azul Metileno 1% 50mg/5mL',v:'EV',a:'Cx15',p:5.73,ml:5},
+{c:8072,n:'Azul Metileno 2% 40mg/2mL FA',v:'EV',a:'Unit',p:6.18,ml:2},
+{c:8073,n:'Beta-Glucana 10mg/2mL',v:'IM/SC',a:'Cx10',p:26.61,ml:2},
+{c:8074,n:'Bicarbonato Na 8,4% 10mL',v:'EV',a:'Cx10',p:6.19,ml:10},
+{c:8075,n:'CoQ10 100mg/2mL (oleoso)',v:'IM',a:'Cx10',p:27.55,ml:2},
+{c:8076,n:'Colágeno Hidrolisado 60mg/2mL',v:'IM/SC/ID',a:'Cx10',p:11.30,ml:2},
+{c:8077,n:'Colchicina 1mg/2mL',v:'EV',a:'Cx10',p:4.74,ml:2},
+{c:8078,n:'Condroitin Sulfato 100mg/2mL',v:'IM/SC/ID',a:'Cx10',p:6.49,ml:2},
+{c:8079,n:'Curcumina 200mg/2mL',v:'IM/SC',a:'Cx10',p:13.13,ml:2},
+{c:8080,n:'Desferal 500mg Liof',v:'EV/IM/SC',a:'Cx5',p:144.40,ml:5},
+{c:8081,n:'DCA 1g/10mL',v:'EV/IM',a:'Cx10',p:48.95,ml:10},
+{c:8082,n:'DL-Fenil 250mg/10mL',v:'EV',a:'Cx10',p:14.02,ml:10},
+{c:8083,n:'DMPS 100mg/5mL',v:'EV/IM',a:'Cx15',p:73.47,ml:5},
+{c:8084,n:'DMSO 99,9% 5mL',v:'EV',a:'Cx15',p:5.61,ml:5},
+{c:8085,n:'EDTA Cálcico 1,5g/10mL',v:'EV/IM',a:'Cx10',p:10.76,ml:10},
+{c:8086,n:'EDTA Sódico 1,5g/10mL',v:'EV',a:'Cx10',p:9.75,ml:10},
+{c:8087,n:'Exsynutriment 10mg/2mL',v:'IM/SC',a:'Cx10',p:8.90,ml:2},
+{c:8088,n:'Fludrocortisona 50mcg/2mL',v:'IM/SC',a:'Cx10',p:55.85,ml:2},
+{c:8089,n:'Glucosamina 400mg/2mL',v:'EV/IM/ID',a:'Cx10',p:10.08,ml:2},
+{c:8090,n:'Heparina 500UI/5mL',v:'EV/SC',a:'Cx15',p:6.17,ml:5},
+{c:8091,n:'Heparina 2500UI/1mL',v:'EV/SC',a:'Cx10',p:7.26,ml:1},
+{c:8092,n:'Lidocaína 1% 20mg/2mL',v:'IM/SC/ID',a:'Cx10',p:4.46,ml:2},
+{c:8093,n:'Lidocaína 2% 20mg/1mL',v:'IM/SC/ID',a:'Cx10',p:4.46,ml:1},
+{c:8094,n:'Luteolina 5mg/2mL',v:'IM/SC/ID',a:'Cx10',p:10.50,ml:2},
+{c:8095,n:'Melatonina 3mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:14.11,ml:2},
+{c:8096,n:'Melatonina 10mg/2mL',v:'EV/IM/SC/ID',a:'Cx10',p:19.76,ml:2},
+{c:8097,n:'Melatonina 25mg/5mL',v:'EV/IM',a:'Cx15',p:23.13,ml:5},
+{c:8098,n:'MSM 750mg/5mL',v:'EV/IM/SC',a:'Cx15',p:10.95,ml:5},
+{c:8099,n:'NAC 300mg/2mL',v:'EV/IM/SC',a:'Cx10',p:6.01,ml:2},
+{c:8100,n:'N-Acetil Tirosina 100mg/2mL',v:'EV/IM',a:'Cx10',p:11.90,ml:2},
+{c:8101,n:'Phenibut 75mg/2mL',v:'EV/IM/SC',a:'Cx10',p:10.88,ml:2},
+{c:8102,n:'Piracetam 1,3g/5mL',v:'EV/IM',a:'Cx15',p:14.30,ml:5},
+{c:8103,n:'Piridoxal-5P 15mg/2mL',v:'EV/IM/SC',a:'Cx10',p:17.95,ml:2},
+{c:8104,n:'PQQ 5mg/2mL',v:'EV/IM/SC',a:'Cx10',p:13.75,ml:2},
+{c:8105,n:'Fosfatidilcolina 250mg/5mL',v:'EV',a:'Cx15',p:27.66,ml:5},
+{c:8106,n:'Fosfatidilcolina 300mg/5mL',v:'EV',a:'Cx15',p:28.89,ml:5},
+{c:8107,n:'Procaína 2% 40mg/2mL',v:'IM/SC/ID',a:'Cx10',p:4.28,ml:2},
+{c:8108,n:'Resveratrol 100mg/2mL',v:'IM/SC/ID',a:'Cx10',p:14.76,ml:2},
+{c:8109,n:'Ribosídeo Nicotinamida 200mg/2mL',v:'EV/IM/SC',a:'Cx10',p:43.54,ml:2},
+{c:8110,n:'SAMe 200mg/2mL',v:'EV/IM',a:'Cx10',p:20.30,ml:2},
+{c:8111,n:'SOD 800UI/2mL',v:'IM',a:'Cx10',p:28.02,ml:2},
+{c:8112,n:'Teacrina 50mg/2mL',v:'IM/SC/ID',a:'Cx10',p:14.06,ml:2},
+{c:8113,n:'Timomodulina 50mg/2mL',v:'IM/SC/ID',a:'Cx10',p:8.08,ml:2},
+{c:8114,n:'Pool Aminoácidos 3,8%/10mL',v:'EV',a:'Cx10',p:15.26,ml:10},
+{c:8115,n:'Pool Artrose 10mL',v:'EV',a:'Cx10',p:18.83,ml:10},
+{c:8116,n:'Pool Citratos 10mL',v:'EV',a:'Cx10',p:18.38,ml:10},
+{c:8117,n:'Pool Coenzimático 2mL',v:'EV/IM',a:'Cx10',p:23.45,ml:2},
+{c:8118,n:'Pool Cognição 2mL',v:'EV/IM/SC',a:'Cx10',p:16.23,ml:2},
+{c:8119,n:'Recovery Muscular 10mL',v:'EV',a:'Cx10',p:20.19,ml:10},
+{c:8120,n:'Recovery Neuronal 2mL',v:'EV/IM',a:'Cx10',p:20.19,ml:2},
+{c:8121,n:'Recovery Oligoelementos 2mL',v:'EV',a:'Cx10',p:16.28,ml:2},
+{c:8122,n:'Recovery Vit.Hidro 2mL',v:'EV/IM',a:'Cx10',p:16.36,ml:2},
+{c:8123,n:'Recovery Vit.Lipo D3 50kUI/1mL',v:'IM',a:'Cx10',p:18.63,ml:1},
+{c:8124,n:'Recovery Vit.Lipo D3 100kUI/1mL',v:'IM',a:'Cx10',p:33.50,ml:1},
+{c:8125,n:'Hialuronato Na 0,6mg/2mL',v:'SC/ID',a:'Cx10',p:5.08,ml:2},
+{c:8126,n:'Peróxido H 3% 75mg/2,5mL',v:'EV',a:'Cx15',p:4.40,ml:2.5},
+{c:8127,n:'Nitrato K 500mg/10mL',v:'EV',a:'Cx10',p:13.51,ml:10},
+{c:8128,n:'Citrato Na 30% 1,5g/5mL',v:'INJ',a:'Cx15',p:7.55,ml:5},
+{c:8129,n:'SF 0,9% 1mL',v:'EV/IM/SC/ID',a:'Cx10',p:3.86,ml:1}
+];
+const HTS=[
+{c:9000,n:'Débito Nutricional D3 50kUI',p:91.65,g:'Bariátrica'},
+{c:9001,n:'Débito Nutricional D3 100kUI',p:106.52,g:'Bariátrica'},
+{c:9002,n:'Detox Hepático Fase I e II',p:77.37,g:'Hepático'},
+{c:9003,n:'Esteatose Hepática',p:58.10,g:'Hepático'},
+{c:9004,n:'Adj. Colesterol c/ CoQ10',p:74.46,g:'Colesterol'},
+{c:9005,n:'Adj. Colesterol s/ CoQ10',p:46.91,g:'Colesterol'},
+{c:9006,n:'Emag. Cetogênica s/ T3',p:55.43,g:'Emagrecimento'},
+{c:9007,n:'Emag. Cetogênica c/ T3',p:66.09,g:'Emagrecimento'},
+{c:9008,n:'Emag. Ansiedade/Compulsão',p:52.58,g:'Emagrecimento'},
+{c:9009,n:'Emag. Sínd. Metabólica',p:61.53,g:'Emagrecimento'},
+{c:9010,n:'Emag. Acelerador I',p:59.09,g:'Emagrecimento'},
+{c:9011,n:'Emag. Acelerador II c/ Furosemida',p:67.09,g:'Emagrecimento'},
+{c:9012,n:'Emag. Acelerador II c/ Ino+Tau',p:67.28,g:'Emagrecimento'},
+{c:9013,n:'Massa Muscular I',p:47.55,g:'Massa Muscular'},
+{c:9014,n:'Massa Muscular II',p:50.05,g:'Massa Muscular'},
+{c:9015,n:'Performance Física I',p:93.89,g:'Massa Muscular'},
+{c:9016,n:'Performance Física II',p:65.40,g:'Massa Muscular'},
+{c:9017,n:'Alteração de Libido',p:60.24,g:'Qualidade de Vida'},
+{c:9018,n:'Bem-Estar Neuromod. I',p:41.69,g:'Qualidade de Vida'},
+{c:9019,n:'Bem-Estar Neuromod. II',p:43.36,g:'Qualidade de Vida'},
+{c:9020,n:'Fibromialgia',p:61.77,g:'Qualidade de Vida'},
+{c:9021,n:'Dor Crônica',p:57.69,g:'Qualidade de Vida'},
+{c:9022,n:'Fadiga Stress I',p:60.34,g:'Qualidade de Vida'},
+{c:9023,n:'Fadiga Stress II',p:44.75,g:'Qualidade de Vida'},
+{c:9024,n:'Herpes/Imunidade',p:57.36,g:'Qualidade de Vida'},
+{c:9025,n:'Modulação Homocisteína',p:70.50,g:'Qualidade de Vida'},
+{c:9026,n:'Mitocondrial I',p:76.17,g:'Qualidade de Vida'},
+{c:9027,n:'Mitocondrial II',p:49.90,g:'Qualidade de Vida'},
+{c:9028,n:'Energizante I',p:80.99,g:'Qualidade de Vida'},
+{c:9029,n:'Energizante II',p:78.21,g:'Qualidade de Vida'},
+{c:9030,n:'Melhora do Sono',p:52.26,g:'Qualidade de Vida'},
+{c:9031,n:'Antioxidante I s/ CoQ10',p:54.39,g:'Qualidade de Vida'},
+{c:9032,n:'Antioxidante I c/ CoQ10',p:81.94,g:'Qualidade de Vida'},
+{c:9033,n:'Antioxidante II',p:80.13,g:'Qualidade de Vida'},
+{c:9034,n:'Hipocortisolismo',p:55.85,g:'Qualidade de Vida'},
+{c:9035,n:'Cabelo Pele Unhas c/ Silício',p:41.85,g:'Qualidade de Vida'},
+{c:9036,n:'Cabelo Pele Unhas c/ Exsynutriment',p:45.32,g:'Qualidade de Vida'},
+{c:9037,n:'TPM',p:43.79,g:'Qualidade de Vida'},
+{c:9038,n:'Lipedema',p:73.59,g:'Qualidade de Vida'},
+{c:9039,n:'Saúde Intestinal',p:31.48,g:'Qualidade de Vida'},
+{c:9040,n:'Disbiose',p:61.59,g:'Qualidade de Vida'},
+{c:9041,n:'Env. Cutâneo c/ Silício',p:53.81,g:'Anti-aging'},
+{c:9042,n:'Env. Cutâneo c/ Exsynutriment',p:57.30,g:'Anti-aging'},
+{c:9043,n:'Osteoporose D3 100kUI',p:28.29,g:'Anti-aging'},
+{c:9044,n:'Osteoporose D3 600kUI',p:31.72,g:'Anti-aging'},
+{c:9045,n:'Osteoartrose I',p:31.98,g:'Anti-aging'},
+{c:9046,n:'Osteoartrose II',p:45.46,g:'Anti-aging'},
+{c:9047,n:'Osteoartrite',p:52.65,g:'Anti-aging'},
+{c:9048,n:'Osteoartrite/Osteoartrose',p:35.82,g:'Anti-aging'},
+{c:9049,n:'Sarcopenia',p:54.78,g:'Anti-aging'},
+{c:9050,n:'Neuroplasticidade',p:60.84,g:'Anti-aging'},
+{c:9051,n:'Déficit Cognitivo I',p:65.91,g:'Anti-aging'},
+{c:9052,n:'Déficit Cognitivo II',p:54.00,g:'Anti-aging'},
+{c:9053,n:'Alopecia c/ Finasterida',p:59.77,g:'Estética'},
+{c:9054,n:'Alopecia c/ Dutasterida',p:66.55,g:'Estética'},
+{c:9055,n:'Alopecia Areata s/ Triancinolona',p:69.61,g:'Estética'},
+{c:9056,n:'Alopecia Areata c/ Triancinolona',p:91.89,g:'Estética'},
+{c:9057,n:'Eflúvio Telógeno Inicial',p:45.50,g:'Estética'},
+{c:9058,n:'Nutrição Capilar Brilho',p:20.87,g:'Estética'},
+{c:9059,n:'Preenchedor Barba',p:28.57,g:'Estética'},
+{c:9060,n:'Flacidez Corporal c/ Silício',p:57.93,g:'Estética'},
+{c:9061,n:'Flacidez Corporal c/ Exsynutriment',p:61.42,g:'Estética'},
+{c:9062,n:'Flacidez Facial I c/ Silício',p:67.56,g:'Estética'},
+{c:9063,n:'Flacidez Facial I c/ Exsynutriment',p:71.05,g:'Estética'},
+{c:9064,n:'Peles Jovens c/ Silício',p:54.14,g:'Estética'},
+{c:9065,n:'Área dos Olhos',p:27.69,g:'Estética'},
+{c:9066,n:'Booster Hidratante Íntimo',p:53.16,g:'Estética'},
+{c:9067,n:'Estrias Rosadas',p:26.46,g:'Estética'},
+{c:9068,n:'Estrias Brancas',p:31.12,g:'Estética'},
+{c:9069,n:'Cicatrização c/ Silício',p:48.41,g:'Estética'},
+{c:9070,n:'Hipercromias I s/ Glut',p:38.35,g:'Estética'},
+{c:9071,n:'Hipercromias I c/ Glut',p:56.28,g:'Estética'},
+{c:9072,n:'Hipercromias II s/ Glut',p:48.91,g:'Estética'},
+{c:9073,n:'Hipercromias II c/ Glut',p:66.84,g:'Estética'},
+{c:9074,n:'Gord.Loc. Papada c/ Rutina',p:49.87,g:'Estética'},
+{c:9075,n:'Gord.Loc. Papada s/ Rutina',p:45.36,g:'Estética'},
+{c:9076,n:'Gord.Loc. Papada II',p:29.73,g:'Estética'},
+{c:9077,n:'Gord.Loc. I c/ L-Carnitina',p:52.90,g:'Estética'},
+{c:9078,n:'Gord.Loc. I c/ Moro',p:66.72,g:'Estética'},
+{c:9079,n:'Gord.Loc. II Flac/Celulite',p:46.19,g:'Estética'},
+{c:9080,n:'Gord.Loc. III Ginóide',p:49.75,g:'Estética'},
+{c:9081,n:'Gord.Loc. IV <4cm',p:83.27,g:'Estética'},
+{c:9082,n:'Gord.Loc. V c/ Silício',p:39.58,g:'Estética'},
+{c:9083,n:'Definição Abdominal',p:97.75,g:'Estética'},
+{c:9084,n:'Celulite c/ Silício',p:40.80,g:'Estética'},
+{c:9085,n:'Drenagem Linfática',p:12.99,g:'Estética'},
+{c:9086,n:'Microag. Alopecia II',p:54.67,g:'Microagulhamento'},
+{c:9087,n:'Microag. Hipercromias III',p:39.58,g:'Microagulhamento'},
+{c:9088,n:'Microag. Hipercromias IV',p:39.25,g:'Microagulhamento'},
+{c:9089,n:'Microag. Hipercromias V',p:29.67,g:'Microagulhamento'},
+{c:9090,n:'Microag. Flacidez Facial II',p:46.41,g:'Microagulhamento'},
+{c:9091,n:'Microag. Flacidez III c/ Silício',p:32.34,g:'Microagulhamento'},
+{c:9092,n:'Microag. Flacidez IV c/ Silício',p:26.35,g:'Microagulhamento'},
+{c:9093,n:'Microag. Cicatrização II c/ Silício',p:27.20,g:'Microagulhamento'},
+{c:9094,n:'Microag. Cicatrização III',p:35.64,g:'Microagulhamento'}
+];
+const HTCATS=[{id:'Todos',ico:'📋'},{id:'Emagrecimento',ico:'🔥'},{id:'Massa Muscular',ico:'💪'},{id:'Qualidade de Vida',ico:'🧘'},{id:'Anti-aging',ico:'⏳'},{id:'Estética',ico:'✨'},{id:'Microagulhamento',ico:'🪡'},{id:'Bariátrica',ico:'🏥'},{id:'Hepático',ico:'🫀'},{id:'Colesterol',ico:'💊'}];
+
+let cart=[],sup='phd',ptab='ativos',fcat='Todos',idcat='Todos',htcat='Todos',httab='ativos';
 const TD={ativos:PA,vitaminas:PV,outros:PO,protocolos:PP};
 const TL={ativos:'Ativos',vitaminas:'Vitaminas',outros:'Anestésicos & Outros',protocolos:'Protocolos EV'};
 
-function setS(s){sup=s;$('tP').className='sup-tab'+(s==='phd'?' a-phd':'');$('tF').className='sup-tab'+(s==='fm'?' a-fm':'');$('tID').className='sup-tab'+(s==='id'?' a-id':'');$('sT').style.display=s==='phd'?'flex':'none';$('cP').style.display=s==='fm'?'flex':'none';$('cPID').style.display=s==='id'?'flex':'none';$('sI').value='';if(s==='fm'){fcat='Todos';rFC()}else if(s==='id'){idcat='Todos';rIDC()}else rPT();rCat()}
+function setS(s){sup=s;$('tP').className='sup-tab'+(s==='phd'?' a-phd':'');$('tF').className='sup-tab'+(s==='fm'?' a-fm':'');$('tID').className='sup-tab'+(s==='id'?' a-id':'');$('tHT').className='sup-tab'+(s==='ht'?' a-ht':'');$('sT').style.display=s==='phd'?'flex':'none';$('cP').style.display=s==='fm'?'flex':'none';$('cPID').style.display=s==='id'?'flex':'none';$('sHT').style.display=s==='ht'?'flex':'none';$('cPHT').style.display=(s==='ht'&&httab==='sits')?'flex':'none';$('sI').value='';if(s==='fm'){fcat='Todos';rFC()}else if(s==='id'){idcat='Todos';rIDC()}else if(s==='ht'){httab='ativos';htcat='Todos';rHTT();rHTC()}else rPT();rCat()}
 function rPT(){$('sT').innerHTML=Object.keys(TD).map(k=>'<div class="stab '+(k===ptab?'on':'')+'" onclick="sPT(\''+k+'\')">'+TL[k]+'</div>').join('')}
 function sPT(t){ptab=t;$('sI').value='';rPT();rCat()}
 function rFC(){$('cP').innerHTML=CATS.map(function(c){var n=c.id==='Todos'?FP.length:FP.filter(function(p){return p.g===c.id}).length;return'<div class="cpill '+(c.id===fcat?'on':'')+'" onclick="sFC(\''+c.id+'\')"><span class="ico">'+c.ico+'</span>'+c.id+'<span class="cc">'+n+'</span></div>'}).join('')}
 function sFC(c){fcat=c;$('sI').value='';rFC();rCat()}
 function rIDC(){$('cPID').innerHTML=IDCATS.map(function(c){var n=c.id==='Todos'?FID.length:FID.filter(function(p){return p.g===c.id}).length;return'<div class="cpill '+(c.id===idcat?'on':'')+'" onclick="sIDC(\''+c.id+'\')"><span class="ico">'+c.ico+'</span>'+c.id+'<span class="cc">'+n+'</span></div>'}).join('')}
 function sIDC(c){idcat=c;$('sI').value='';rIDC();rCat()}
+function rHTT(){$('sHT').innerHTML=['ativos','sits'].map(function(k){return'<div class="stab '+(k===httab?'on':'')+'" onclick="sHTT(\''+k+'\')">'+({ativos:'Ativos Individuais',sits:'SITs (Protocolos)'}[k])+'</div>'}).join('');$('cPHT').style.display=(httab==='sits')?'flex':'none'}
+function sHTT(t){httab=t;htcat='Todos';$('sI').value='';rHTT();if(t==='sits')rHTC();rCat()}
+function rHTC(){$('cPHT').innerHTML=HTCATS.map(function(c){var n=c.id==='Todos'?HTS.length:HTS.filter(function(p){return p.g===c.id}).length;return'<div class="cpill '+(c.id===htcat?'on':'')+'" onclick="sHTC(\''+c.id+'\')"><span class="ico">'+c.ico+'</span>'+c.id+'<span class="cc">'+n+'</span></div>'}).join('')}
+function sHTC(c){htcat=c;$('sI').value='';rHTC();rCat()}
 
 function rCat(){
 var L=$('cL'),q=$('sI').value.toLowerCase().trim(),via=$('vS').value;
@@ -351,6 +590,8 @@ if(inc>0&&inc<data.length){$('vWT').textContent=inc+' ativo(s) em cinza não ind
 function aPHD(c,t){var d=TD[t],i=d.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.s==='phd'&&x.t==='u'});if(e)e.q++;else cart.push({c:c,n:i.n,p:i.p,q:1,t:'u',s:'phd',ml:i.ml||0});rC();toast('✓ '+i.n)}
 function aPP(c){var i=PP.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.t==='p'&&x.s==='phd'});if(e)e.q++;else cart.push({c:c,n:i.n,p:i.pr,q:1,t:'p',s:'phd',ss:i.s,ml:0});rC();toast('✓ '+i.n)}
 function aFM(c){var i=FP.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.s==='fm'});if(e)e.q++;else cart.push({c:c,n:i.n,p:0,q:1,t:'p',s:'fm',k:i.k,d:i.d,ml:i.ml||0});rC();toast('✓ [FM] '+i.n)}
+function aHTA(c){var i=HTA.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.s==='ht'&&x.t==='u'});if(e)e.q++;else cart.push({c:c,n:i.n,p:i.p,q:1,t:'u',s:'ht',ml:i.ml||0});rC();toast('✓ '+i.n)}
+function aHTS(c){var i=HTS.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.s==='ht'&&x.t==='p'});if(e)e.q++;else cart.push({c:c,n:i.n,p:i.p,q:1,t:'p',s:'ht'});rC();toast('✓ [HT] '+i.n)}
 function aID(c){var i=FID.find(function(x){return x.c===c});if(!i)return;var e=cart.find(function(x){return x.c===c&&x.s==='fid'});if(e)e.q++;else cart.push({c:c,n:i.n,p:0,q:1,t:'p',s:'fid',k:i.k,d:i.d,ml:i.ml||0});rC();toast('✓ [ID] '+i.n)}
 function rm(i){cart.splice(i,1);rC()}
 function cq(i,d){cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);rC()}
@@ -358,11 +599,11 @@ function cq(i,d){cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);rC()}
 function rC(){
 var L=$('cLi'),mk=parseFloat($('mI').value)||0;
 if(!cart.length){L.innerHTML='<div class="cart-empty"><div class="cart-empty-ico">💉</div><p>Nenhum item selecionado</p><p class="hint">Selecione ativos ou protocolos no catálogo</p></div>';$('cC').textContent='0';$('tCo').textContent='R$ 0,00';$('tA').textContent='0';$('tPr').textContent='R$ 0,00';$('bG').disabled=true;$('volRow').style.display='none';return}
-L.innerHTML=cart.map(function(c,i){return'<div class="crt-i"><div><span class="crt-n">'+(c.s==='fm'?'[FM] ':(c.s==='fid'?'[ID] ':''))+c.n+'</span><span class="crt-o '+(c.s==='phd'?'o-phd':'o-fm')+'">'+(c.s==='phd'?'PHD':(c.s==='fm'?'FM':'ID'))+'</span></div><div>'+(c.p>0?'<span class="crt-pr">'+M(c.p*c.q)+'</span>':'<span class="crt-con">consultar</span>')+'</div><div class="qctl"><button class="qbtn" onclick="cq('+i+',-1)">−</button><span class="qval">'+c.q+'</span><button class="qbtn" onclick="cq('+i+',1)">+</button></div><button class="rbtn" onclick="rm('+i+')">✕</button></div>'}).join('');
+L.innerHTML=cart.map(function(c,i){return'<div class="crt-i"><div><span class="crt-n">'+(c.s==='fm'?'[FM] ':(c.s==='fid'?'[ID] ':(c.s==='ht'?'[HT] ':'')))+c.n+'</span><span class="crt-o '+(c.s==='phd'?'o-phd':'o-fm')+'">'+(c.s==='phd'?'PHD':(c.s==='fm'?'FM':(c.s==='fid'?'ID':(c.s==='ht'?'HT':'?'))))+'</span></div><div>'+(c.p>0?'<span class="crt-pr">'+M(c.p*c.q)+'</span>':'<span class="crt-con">consultar</span>')+'</div><div class="qctl"><button class="qbtn" onclick="cq('+i+',-1)">−</button><span class="qval">'+c.q+'</span><button class="qbtn" onclick="cq('+i+',1)">+</button></div><button class="rbtn" onclick="rm('+i+')">✕</button></div>'}).join('');
 var tc=cart.reduce(function(s,c){return s+c.p*c.q},0),ta=cart.reduce(function(s,c){return s+c.q},0),tp=tc*(1+mk/100);
 var vol=cart.reduce(function(s,c){return s+(c.ml||0)*c.q},0);
 $('cC').textContent=cart.length;$('tCo').textContent=M(tc);$('tA').textContent=ta;
-$('tPr').textContent=tc>0?M(tp):(cart.some(function(c){return c.s==='fm'||c.s==='fid'})?'sob consulta':'R$ 0,00');
+$('tPr').textContent=tc>0?M(tp):(cart.some(function(c){return (c.s==='fm'||c.s==='fid')&&c.p===0})?'sob consulta':'R$ 0,00');
 if(vol>0){$('volRow').style.display='flex';$('tVol').textContent=vol+' mL'}else $('volRow').style.display='none';
 $('bG').disabled=false}
 
@@ -372,13 +613,13 @@ var pn=$('pN').value||'—',dt=$('bD').value||new Date().toISOString().split('T'
 var cl=$('cS').value,vi=$('vS').selectedOptions[0].textContent;
 var tc=cart.reduce(function(s,c){return s+c.p*c.q},0),tp=tc*(1+mk/100);
 var vol=cart.reduce(function(s,c){return s+(c.ml||0)*c.q},0);
-var rows=cart.map(function(c){var v=c.p>0?M(c.p*c.q*(1+mk/100)):'consultar';var tag=c.s==='phd'?'<span class="inv-tag" style="background:var(--phd-bg);color:var(--phd)">PHD</span>':(c.s==='fm'?'<span class="inv-tag" style="background:var(--fm-bg);color:var(--fm)">FM</span>':'<span class="inv-tag" style="background:#e8f0e8;color:#2a7a2a">ID</span>');return'<tr><td>'+c.n+' '+tag+'</td><td style="text-align:center">'+c.q+'</td><td style="text-align:right;font-weight:700">'+v+'</td></tr>'}).join('');
-$('iCo').innerHTML='<div class="inv-hdr"><div class="inv-brand"><div class="inv-mark">P</div><h3>Orçamento de Soroterapia</h3><div class="inv-sub">PHD do Brasil · Formédica</div></div><div class="inv-meta"><strong>'+cl+'</strong><br>'+fD(dt)+'<br>Nº '+Date.now().toString(36).toUpperCase().slice(-6)+'</div></div><div class="inv-patient"><div><div class="ip-l">Paciente</div><div class="ip-v">'+pn+'</div></div><div><div class="ip-l">Via de Administração</div><div class="ip-v">'+vi+'</div></div>'+(vol>0?'<div><div class="ip-l">Volume Total</div><div class="ip-v">'+vol+' mL</div></div>':'')+'<div><div class="ip-l">Itens</div><div class="ip-v">'+cart.length+' ativos/protocolos</div></div></div><table><thead><tr><th>Ativo / Protocolo</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>'+rows+'</tbody></table><div class="inv-total"><span class="it-l">Total</span><span class="it-v">'+(tc>0?M(tp):'sob consulta')+'</span></div><div class="inv-foot">Orçamento válido por 30 dias. Tabelas PHD do Brasil Rev. Fev/2026 + Formédica IM Ed. 2023.11 + Intradermo Ed. 2024.02.<br>ANVISA RDC 67/2007. Condições de pagamento a combinar.</div>';
+var rows=cart.map(function(c){var v=c.p>0?M(c.p*c.q*(1+mk/100)):'consultar';var tag=c.s==='phd'?'<span class="inv-tag" style="background:var(--phd-bg);color:var(--phd)">PHD</span>':(c.s==='fm'?'<span class="inv-tag" style="background:var(--fm-bg);color:var(--fm)">FM</span>':(c.s==='fid'?'<span class="inv-tag" style="background:#e8f0e8;color:#2a7a2a">ID</span>':'<span class="inv-tag" style="background:#fdf3e8;color:#8b5e34">HT</span>'));return'<tr><td>'+c.n+' '+tag+'</td><td style="text-align:center">'+c.q+'</td><td style="text-align:right;font-weight:700">'+v+'</td></tr>'}).join('');
+$('iCo').innerHTML='<div class="inv-hdr"><div class="inv-brand"><div class="inv-mark">P</div><h3>Orçamento de Soroterapia</h3><div class="inv-sub">PHD do Brasil · Formédica</div></div><div class="inv-meta"><strong>'+cl+'</strong><br>'+fD(dt)+'<br>Nº '+Date.now().toString(36).toUpperCase().slice(-6)+'</div></div><div class="inv-patient"><div><div class="ip-l">Paciente</div><div class="ip-v">'+pn+'</div></div><div><div class="ip-l">Via de Administração</div><div class="ip-v">'+vi+'</div></div>'+(vol>0?'<div><div class="ip-l">Volume Total</div><div class="ip-v">'+vol+' mL</div></div>':'')+'<div><div class="ip-l">Itens</div><div class="ip-v">'+cart.length+' ativos/protocolos</div></div></div><table><thead><tr><th>Ativo / Protocolo</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>'+rows+'</tbody></table><div class="inv-total"><span class="it-l">Total</span><span class="it-v">'+(tc>0?M(tp):'sob consulta')+'</span></div><div class="inv-foot">Orçamento válido por 30 dias. Tabelas PHD do Brasil Rev. Fev/2026 + Formédica IM 2023.11 + Intradermo 2024.02 + Health Tech Out/2024.<br>ANVISA RDC 67/2007. Condições de pagamento a combinar.</div>';
 $('iA').innerHTML='<button class="btn btn-main" onclick="window.print()" style="flex:1">Imprimir</button><button class="btn btn-wa" onclick="shareWA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.19 5.06 4.47.71.31 1.26.49 1.69.63.71.23 1.35.2 1.86.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.05 21.5c-1.77 0-3.5-.47-5.02-1.37l-.36-.21-3.73.98.99-3.63-.24-.37A9.42 9.42 0 0 1 2.5 12.05c0-5.24 4.27-9.5 9.52-9.5 2.54 0 4.93.99 6.72 2.79a9.47 9.47 0 0 1 2.78 6.74c0 5.24-4.27 9.5-9.47 9.42z"/></svg>WhatsApp</button><button class="btn btn-sec" onclick="clM(null)">Fechar</button>';
 $('mO').classList.add('show')}
 
 function clM(e){if(!e||e.target===$('mO'))$('mO').classList.remove('show')}
-function shareWA(){var pn=$('pN').value||'Paciente',cl=$('cS').value,mk=parseFloat($('mI').value)||0;var tc=cart.reduce(function(s,c){return s+c.p*c.q},0),tp=tc*(1+mk/100);var vol=cart.reduce(function(s,c){return s+(c.ml||0)*c.q},0);var m='*Orçamento de Soroterapia*\n'+cl+'\n\nPaciente: '+pn+'\n\n';cart.forEach(function(c){var v=c.p>0?M(c.p*c.q*(1+mk/100)):'consultar';m+='• '+(c.s==='fm'?'[FM] ':(c.s==='fid'?'[ID] ':''))+c.n+' ×'+c.q+' — '+v+'\n'});if(vol>0)m+='\nVolume total: '+vol+' mL\n';m+='\n*TOTAL: '+(tc>0?M(tp):'sob consulta')+'*\n\n_Válido 30 dias · PHD+Formédica_';window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank')}
+function shareWA(){var pn=$('pN').value||'Paciente',cl=$('cS').value,mk=parseFloat($('mI').value)||0;var tc=cart.reduce(function(s,c){return s+c.p*c.q},0),tp=tc*(1+mk/100);var vol=cart.reduce(function(s,c){return s+(c.ml||0)*c.q},0);var m='*Orçamento de Soroterapia*\n'+cl+'\n\nPaciente: '+pn+'\n\n';cart.forEach(function(c){var v=c.p>0?M(c.p*c.q*(1+mk/100)):'consultar';m+='• '+(c.s==='fm'?'[FM] ':(c.s==='fid'?'[ID] ':(c.s==='ht'?'[HT] ':'')))+c.n+' ×'+c.q+' — '+v+'\n'});if(vol>0)m+='\nVolume total: '+vol+' mL\n';m+='\n*TOTAL: '+(tc>0?M(tp):'sob consulta')+'*\n\n_Válido 30 dias · PHD+Formédica_';window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank')}
 function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},1500)}
 
 $('vS').addEventListener('change',rCat);
